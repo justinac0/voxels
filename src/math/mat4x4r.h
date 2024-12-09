@@ -21,5 +21,6 @@ mat4x4r mat4x4r_identity();
 mat4x4r mat4x4r_add(mat4x4r* a, mat4x4r* b);
 mat4x4r mat4x4r_sub(mat4x4r* a, mat4x4r* b);
 mat4x4r mat4x4r_mul(mat4x4r* a, mat4x4r* b);
+mat4x4r mat4x4r_perspective(real l, real r, real t, real b, real near, real far, real fov, real aspect);
 
 #endif // MAT4X4R_H

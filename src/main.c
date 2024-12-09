@@ -23,6 +23,10 @@
 #define VMATH_HIGH_PREC
 #include "math/vmath.h"
 
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
+#define SCREEN_TITLE "voxels"
+
 bool running = false;
 
 void poll_sdl_events(SDL_Event *event) {
@@ -53,9 +57,9 @@ int main(int argc, char const *argv[]) {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     window = SDL_CreateWindow(
-        "voxels",
-        1280,
-        720,
+        SCREEN_TITLE,
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
         SDL_WINDOW_OPENGL);
 
     if (window == NULL) {
@@ -96,13 +100,10 @@ int main(int argc, char const *argv[]) {
 
     bind_vertex_array(0);
 
-    mat4x4r perspective = mat4x4r_identity();
+    real aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+    mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.02, 100, 90, aspect);
     mat4x4r view = mat4x4r_identity();
     mat4x4r model = mat4x4r_identity();
-
-    mat4x4r m;
-    m.m00 = m.m11 = m.m22 = m.m33 = 0.5;
-    model = mat4x4r_add(&model, &m);
 
     SDL_Event event;
     while (running) {
