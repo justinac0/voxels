@@ -188,3 +188,14 @@ Mat4x4r mat4x4r_lookat(Vec3r right, Vec3r up, Vec3r forward, Vec3r eye) {
 
     return m;
 }
+
+Mat4x4r mat4x4r_print(Mat4x4r* m) {
+    printf("[Matrix]\n");
+    for (int y = 0; y < 4; y++) {
+        for (int x = 0; x < 4; x++) {
+            printf("%02f ", m->m[y][x]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}

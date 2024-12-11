@@ -21,6 +21,7 @@
 #include "renderer/shader.h"
 #include "renderer/camera.h"
 #include "chunk/voxel.h"
+#include "input/keyboard.h"
 
 // TODO: common defs
 #define KB (1024)
@@ -40,16 +41,11 @@ bool running = false;
 
 void poll_sdl_events(SDL_Event *event) {
     while (SDL_PollEvent(event)) {
-        SDL_KeyboardEvent keyEvent = event->key;
-        if (keyEvent.down && keyEvent.key == SDLK_ESCAPE) {
-            running = false;
+        switch (event->type) {
+            case SDL_EVENT_QUIT:
+                running = false;
+                break;
         }
-        if (event->type == SDL_EVENT_QUIT) {
-            running = false;
-        }
-        if (event->type == SDL_EVENT_WINDOW_MOVED) break;
-        if (event->type == SDL_EVENT_WINDOW_RESIZED) break;
-        if (event->type == SDL_EVENT_WINDOW_FOCUS_GAINED) break;
     }
 }
 
@@ -115,22 +111,23 @@ int main(int argc, char const *argv[]) {
     real fov = 90;
     Mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.02, 100, 90, aspect);
 
-    // Vec3r eye = {0, 0, -3};
-    // Mat4x4r view = mat4x4r_lookat(vec3r_right(), vec3r_up(), vec3r_forward(), eye);
-
     Mat4x4r model = mat4x4r_identity();
 
     SDL_Event event;
     float i = 0;
 
     Camera camera;
-    camera_init(&camera, (Vec3r){1, 0, -2});
-
-    float mx, my;
+    camera_init(&camera, (Vec3r){1, 0, -2}, (Vec3r){0});
 
     while (running) {
         poll_sdl_events(&event);
 
+        if (is_key_down(SDLK_ESCAPE)) {
+            running = false;
+            break;
+        }
+
+        float mx, my;
         float mx_old = mx, my_old = my;
         SDL_GetMouseState(&mx, &my);
         float dmx = mx - mx_old, dmy = my - my_old;
@@ -146,6 +143,7 @@ int main(int argc, char const *argv[]) {
         glUseProgram(shaderProgram);
         bind_vertex_array(vaoID);
         glDrawArrays(GL_TRIANGLES, 0, 3);
+        // SDL3 how to get keyboard input to camera
 
         SDL_GL_SwapWindow(window);
     }

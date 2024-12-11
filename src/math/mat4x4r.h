@@ -1,6 +1,8 @@
 #ifndef MAT4X4R_H
 #define MAT4X4R_H
 
+#include <stdio.h>
+
 #include "type.h"
 #include "vec3r.h"
 #include "vec4r.h"
@@ -33,5 +35,6 @@ Mat4x4r mat4x4r_rotate_y(Mat4x4r* m, real angle);
 Mat4x4r mat4x4r_rotate_z(Mat4x4r* m, real angle);
 Mat4x4r mat4x4r_perspective(real l, real r, real t, real b, real near, real far, real fov, real aspect);
 Mat4x4r mat4x4r_lookat(Vec3r right, Vec3r up, Vec3r forward, Vec3r eye);
+Mat4x4r mat4x4r_print(Mat4x4r* m);
 
 #endif // MAT4X4R_H
