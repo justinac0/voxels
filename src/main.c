@@ -13,6 +13,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_video.h>
 #include <SDL3/SDL_events.h>
+#include <SDL3/SDL_mouse.h>
 #include <SDL3/SDL_keyboard.h>
 #include <glad/glad.h>
 
@@ -20,8 +21,14 @@
 #include "renderer/shader.h"
 #include "chunk/voxel.h"
 
+#define KB (1024)
+#define MB (KB * 1000)
+#define GB (MB * 1000)
+
 #define VMATH_HIGH_PREC
 #include "math/vmath.h"
+
+#include "memory/arena.h"
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -38,10 +45,23 @@ void poll_sdl_events(SDL_Event *event) {
         if (event->type == SDL_EVENT_QUIT) {
             running = false;
         }
+        if (event->type == SDL_EVENT_WINDOW_MOVED) break;
+        if (event->type == SDL_EVENT_WINDOW_RESIZED) break;
+        if (event->type == SDL_EVENT_WINDOW_FOCUS_GAINED) break;
     }
 }
 
 int main(int argc, char const *argv[]) {
+    Arena arena;
+    arena_make(&arena, (size_t)(30) * KB);
+
+    unsigned char* numbers = arena_alloc(&arena, 4098 * sizeof(unsigned char));
+    int* bigNumbers = arena_alloc(&arena, 1000 * sizeof(int));
+    float* reals = arena_alloc(&arena, 2000 * sizeof(float));
+    short* shorts = arena_alloc(&arena, 5000 * sizeof(short));
+
+    arena_free(&arena);
+
     SDL_Window *window;
     SDL_assert(SDL_Init(SDL_INIT_VIDEO));
 
@@ -77,11 +97,6 @@ int main(int argc, char const *argv[]) {
 
     running = true;
 
-    voxel vox;
-    for (int i = 0; i < 10; i++) {
-        vox.data[i] = (float)i;
-    }
-
     GLuint shaderProgram = create_shader_program("resources/shaders/triangle.vs", "resources/shaders/triangle.fs");
 
     // triangle data
@@ -101,15 +116,23 @@ int main(int argc, char const *argv[]) {
     bind_vertex_array(0);
 
     real aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
-    mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.02, 100, 90, aspect);
-    mat4x4r view = mat4x4r_identity();
-    mat4x4r model = mat4x4r_identity();
+    Mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.02, 100, 90, aspect);
 
+    Mat4x4r model = mat4x4r_identity();
+
+    Vec3r position = {0, 0, -2};
     SDL_Event event;
+    float i = 0;
     while (running) {
         poll_sdl_events(&event);
 
-        glClearColor(0, 0.3, 0.4, 1);
+        i += 0.001;
+        position.y = sinf(i);
+        position.x = cosf(i);
+
+        Mat4x4r view = mat4x4r_lookat_col(vec3r_right(), vec3r_up(), vec3r_forward(), position);
+
+        glClearColor(0.2, 0.4, 0.6, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // send uniforms
