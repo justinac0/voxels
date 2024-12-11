@@ -31,5 +31,7 @@ Vec3r vec3r_forward();
 Vec3r vec3r_backward();
 Vec3r vec3r_fill(real n);
 Vec3r vec3r_zero();
+// angle between vectors
+// projection
 
 #endif // VEC3R_H

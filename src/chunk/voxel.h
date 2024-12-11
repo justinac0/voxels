@@ -8,7 +8,7 @@ typedef union Voxel {
     struct {
         Vec3r position;
         Vec3r normal;
-        vec4r color;
+        Vec4r color;
     };
 } Voxel;
 

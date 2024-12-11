@@ -37,8 +37,10 @@
 // 
 // 
 
+#include "type.h"
 #include "vec3r.h"
 #include "vec4r.h"
 #include "mat4x4r.h"
+#include "quat.h"
 
 #endif // VMATH_H

@@ -3,7 +3,7 @@
 
 #include "type.h"
 
-typedef union vec4r {
+typedef union Vec4r {
     real v[4];
     struct {
         real x, y, z, w;
@@ -11,17 +11,17 @@ typedef union vec4r {
     struct {
         real r, g, b, a;
     };
-} vec4r;
+} Vec4r;
 
-vec4r vec4r_add(vec4r* a, vec4r* b);
-vec4r vec4r_sub(vec4r* a, vec4r* b);
-vec4r vec4r_mul(vec4r* a, vec4r* b);
-real vec4r_dot(vec4r* a, vec4r* b);
-vec4r vec4r_scalar(vec4r* a, real b);
-real vec4r_square_mag(vec4r* a);
-real vec4r_mag(vec4r* a);
-vec4r vec4r_unit(vec4r *a);
-vec4r vec4r_fill(real n);
-vec4r vec4r_zero();
+Vec4r vec4r_add(Vec4r* a, Vec4r* b);
+Vec4r vec4r_sub(Vec4r* a, Vec4r* b);
+Vec4r vec4r_mul(Vec4r* a, Vec4r* b);
+real vec4r_dot(Vec4r* a, Vec4r* b);
+Vec4r vec4r_scalar(Vec4r* a, real b);
+real vec4r_square_mag(Vec4r* a);
+real vec4r_mag(Vec4r* a);
+Vec4r vec4r_unit(Vec4r *a);
+Vec4r vec4r_fill(real n);
+Vec4r vec4r_zero();
 
 #endif // VEC4R_H

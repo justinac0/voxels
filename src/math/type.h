@@ -5,7 +5,7 @@
 #include <math.h>
 
 #ifdef VMATH_HIGH_PREC
-    typedef double real;
+    typedef float real;
     #define sqrtr sqrt
 #endif
 
