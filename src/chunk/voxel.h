@@ -3,13 +3,13 @@
 
 #include "../math/vmath.h"
 
-typedef union voxel {
+typedef union Voxel {
     real data[10];
     struct {
-        vec3r position;
-        vec3r normal;
+        Vec3r position;
+        Vec3r normal;
         vec4r color;
     };
-} voxel;
+} Voxel;
 
 #endif // VOXEL_H

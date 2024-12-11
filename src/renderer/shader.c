@@ -15,7 +15,7 @@ char* read_file(char* filePath) {
 
     rewind(fileStream);
 
-    char* buffer = (char*) malloc(sizeof(char) * length + 1);
+    char* buffer = (char*) calloc(length + 1, sizeof(char));
     assert(buffer);
 
     if (!buffer) {
@@ -49,6 +49,7 @@ GLuint create_shader_program(char* vertexFilePath, char* fragmentFilePath) {
         assert(infoLog);
 
         glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
+        printf("[SHADER]: %s\n", infoLog);
         free(infoLog);
 
         glDeleteShader(vertexShader);
@@ -72,7 +73,7 @@ GLuint create_shader_program(char* vertexFilePath, char* fragmentFilePath) {
         assert(infoLog);
 
         glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
-
+        printf("[SHADER]: %s\n", infoLog);
         free(infoLog);
 
         glDeleteShader(fragmentShader);
@@ -98,7 +99,7 @@ GLuint create_shader_program(char* vertexFilePath, char* fragmentFilePath) {
         assert(infoLog);
 
         glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
-
+        printf("[SHADER]: %s\n", infoLog);
         free(infoLog);
 
         glDeleteProgram(program);

@@ -1,7 +1,7 @@
 #include "vec3r.h"
 
-vec3r vec3r_add(vec3r* a, vec3r* b) {
-    vec3r c;
+Vec3r vec3r_add(Vec3r* a, Vec3r* b) {
+    Vec3r c;
 
     for (size_t i = 0; i < 3; i++) {
         c.v[i] = a->v[i] + b->v[i];
@@ -10,8 +10,8 @@ vec3r vec3r_add(vec3r* a, vec3r* b) {
     return c;
 }
 
-vec3r vec3r_sub(vec3r* a, vec3r* b) {
-    vec3r c;
+Vec3r vec3r_sub(Vec3r* a, Vec3r* b) {
+    Vec3r c;
 
     for (size_t i = 0; i < 3; i++) {
         c.v[i] = a->v[i] - b->v[i];
@@ -20,8 +20,8 @@ vec3r vec3r_sub(vec3r* a, vec3r* b) {
     return c;
 }
 
-vec3r vec3r_mul(vec3r* a, vec3r* b) {
-    vec3r c;
+Vec3r vec3r_mul(Vec3r* a, Vec3r* b) {
+    Vec3r c;
 
     for (size_t i = 0; i < 3; i++) {
         c.v[i] = a->v[i] * b->v[i];
@@ -30,7 +30,7 @@ vec3r vec3r_mul(vec3r* a, vec3r* b) {
     return c;
 }
 
-real vec3r_dot(vec3r* a, vec3r* b) {
+real vec3r_dot(Vec3r* a, Vec3r* b) {
     real sum = 0;
 
     for (size_t i = 0; i < 3; i++) {
@@ -40,8 +40,8 @@ real vec3r_dot(vec3r* a, vec3r* b) {
     return sum;
 }
 
-vec3r vec3r_cross(vec3r* a, vec3r* b) {
-    vec3r c;
+Vec3r vec3r_cross(Vec3r* a, Vec3r* b) {
+    Vec3r c;
 
     c.x = a->y * b->z - a->z * b->y;
     c.y = a->z * b->x - a->x * b->z;
@@ -50,8 +50,8 @@ vec3r vec3r_cross(vec3r* a, vec3r* b) {
     return c;
 }
 
-vec3r vec3r_scalar(vec3r* a, real b) {
-    vec3r c;
+Vec3r vec3r_scalar(Vec3r* a, real b) {
+    Vec3r c;
 
     for (size_t i = 0; i < 3; i++) {
         c.v[i] = a->v[i] * b;
@@ -60,7 +60,7 @@ vec3r vec3r_scalar(vec3r* a, real b) {
     return c;
 }
 
-real vec3r_square_mag(vec3r* a) {
+real vec3r_square_mag(Vec3r* a) {
     real sum = 0;
     
     for (size_t i = 0; i < 3; i++) {
@@ -70,68 +70,77 @@ real vec3r_square_mag(vec3r* a) {
     return sum;
 }
 
-real vec3r_mag(vec3r* a) {
+real vec3r_mag(Vec3r* a) {
     return sqrtr(vec3r_square_mag(a));
 }
 
-vec3r vec3r_unit(vec3r *a) {
+Vec3r vec3r_unit(Vec3r *a) {
     return vec3r_scalar(a, vec3r_mag(a));
 }
 
-vec3r vec3r_up(real n) {
-    vec3r v = {
+Vec3r vec3r_negate(Vec3r* a) {
+    Vec3r v;
+    v.x = -a->x;
+    v.y = -a->y;
+    v.z = -a->z;
+
+    return v;
+}
+
+Vec3r vec3r_up() {
+    Vec3r v = {
         0, 1, 0,
     };
 
     return v;
 }
 
-vec3r vec3r_down(real n) {
-    vec3r v = {
+Vec3r vec3r_down() {
+    Vec3r v = {
         0, -1, 0,
     };
 
     return v;
 }
 
-vec3r vec3r_left(real n) {
-    vec3r v = {
+Vec3r vec3r_left() {
+    Vec3r v = {
         -1, 0, 0,
     };
 
     return v;
 }
 
-vec3r vec3r_right(real n) {
-    vec3r v = {
+Vec3r vec3r_right() {
+    Vec3r v = {
         1, 0, 0,
     };
 
     return v;
 }
 
-vec3r vec3r_forward(real n) {
-    vec3r v = {
+Vec3r vec3r_forward() {
+    Vec3r v = {
         0, 0, 1,
     };
 
     return v;
 }
 
-vec3r vec3r_backward(real n) {
-    vec3r v = {
+Vec3r vec3r_backward() {
+    Vec3r v = {
         0, 0, -1,
     };
 
     return v;
 }
 
-vec3r vec3r_fill(real n) {
-    vec3r v = { n };
+Vec3r vec3r_fill(real n) {
+    Vec3r v = { n };
 
     return v;
 }
 
-vec3r vec3r_zero() {
+Vec3r vec3r_zero() {
     return vec3r_fill(0);
 }

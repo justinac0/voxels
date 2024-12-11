@@ -2,9 +2,10 @@
 #define MAT4X4R_H
 
 #include "type.h"
+#include "vec3r.h"
 #include "vec4r.h"
 
-typedef union mat4x4r {
+typedef union Mat4x4r {
     real m[4][4];
     struct {
         real m00, m01, m02, m03;
@@ -15,12 +16,14 @@ typedef union mat4x4r {
     struct {
         vec4r m0, m1, m2, m3;
     };
-} mat4x4r;
+} Mat4x4r;
 
-mat4x4r mat4x4r_identity();
-mat4x4r mat4x4r_add(mat4x4r* a, mat4x4r* b);
-mat4x4r mat4x4r_sub(mat4x4r* a, mat4x4r* b);
-mat4x4r mat4x4r_mul(mat4x4r* a, mat4x4r* b);
-mat4x4r mat4x4r_perspective(real l, real r, real t, real b, real near, real far, real fov, real aspect);
+Mat4x4r mat4x4r_identity();
+Mat4x4r mat4x4r_add(Mat4x4r* a, Mat4x4r* b);
+Mat4x4r mat4x4r_sub(Mat4x4r* a, Mat4x4r* b);
+Mat4x4r mat4x4r_mul(Mat4x4r* a, Mat4x4r* b);
+Mat4x4r mat4x4r_perspective(real l, real r, real t, real b, real near, real far, real fov, real aspect);
+Mat4x4r mat4x4r_lookat_row(Vec3r right, Vec3r up, Vec3r forward, Vec3r eye);
+Mat4x4r mat4x4r_lookat_col(Vec3r right, Vec3r up, Vec3r forward, Vec3r eye);
 
 #endif // MAT4X4R_H
