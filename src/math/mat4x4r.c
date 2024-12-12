@@ -82,7 +82,7 @@ Mat4x4r mat4x4r_scale(Mat4x4r* m, Vec3r* v) {
     return n;
 }
 
-Mat4x4r mat4x4r_translate(Vec3r v) {
+Mat4x4r mat4x4r_translation(Vec3r v) {
     Mat4x4r n = mat4x4r_identity();
 
     for (size_t i = 0; i < 3; i++) {

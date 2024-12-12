@@ -28,7 +28,7 @@ Mat4x4r mat4x4r_sub(Mat4x4r* a, Mat4x4r* b);
 Mat4x4r mat4x4r_mul(Mat4x4r* a, Mat4x4r* b);
 Mat4x4r mat4x4r_mul_scalar(Mat4x4r* m, real value);
 Mat4x4r mat4x4r_scale(Mat4x4r* m, Vec3r* scale);
-Mat4x4r mat4x4r_translate(Vec3r v);
+Mat4x4r mat4x4r_translation(Vec3r v);
 Mat4x4r mat4x4r_rotation(Quat q);
 Mat4x4r mat4x4r_perspective(real l, real r, real t, real b, real near, real far, real fov, real aspect);
 Mat4x4r mat4x4r_lookat(Vec3r right, Vec3r up, Vec3r forward, Vec3r eye);

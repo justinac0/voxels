@@ -17,6 +17,8 @@ typedef struct {
     Vec3r       position;
     Quat        orientation;
     Mat4x4r     view;
+    Mat4x4r     rotation;
+    Mat4x4r     translation;
     CameraMode  mode;
 } Camera;
 

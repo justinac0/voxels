@@ -26,49 +26,79 @@ Voxel *chunk_get_voxel(Chunk *chunk, uint8_t x, uint8_t y, uint8_t z) {
     return &chunk->voxels[x * CHUNK_AREA + y * CHUNK_SIZE + z];
 }
 
+#define CUBE_VERTICES(x, y, z) { \
+    -1.0f + x, -1.0f + y, -1.0f + z, \
+     1.0f + x, -1.0f + y, -1.0f + z, \
+     1.0f + x,  1.0f + y, -1.0f + z, \
+    -1.0f + x,  1.0f + y, -1.0f + z, \
+    -1.0f + x, -1.0f + y,  1.0f + z, \
+     1.0f + x, -1.0f + y,  1.0f + z, \
+     1.0f + x,  1.0f + y,  1.0f + z, \
+    -1.0f + x,  1.0f + y,  1.0f + z \
+}
+
+#define CUBE_INDICES(i) { \
+    4+(i*8), 5+(i*8), 6+(i*8), \
+    6+(i*8), 7+(i*8), 4+(i*8), \
+    0+(i*8), 1+(i*8), 2+(i*8), \
+    2+(i*8), 3+(i*8), 0+(i*8), \
+    0+(i*8), 4+(i*8), 7+(i*8), \
+    7+(i*8), 3+(i*8), 0+(i*8), \
+    1+(i*8), 5+(i*8), 6+(i*8), \
+    6+(i*8), 2+(i*8), 1+(i*8), \
+    3+(i*8), 7+(i*8), 6+(i*8), \
+    6+(i*8), 2+(i*8), 3+(i*8), \
+    0+(i*8), 4+(i*8), 5+(i*8), \
+    5+(i*8), 1+(i*8), 0+(i*8)  \
+}
+
 void chunk_generate_mesh(Chunk *chunk) {
     chunk->vaoID = create_vertex_array();
     bind_vertex_array(chunk->vaoID);
 
     float size = 0.5;
 
-    float vertices[] = {
-        // Positions
-        -1.0f, -1.0f, -1.0f,  // 0: Bottom-back-left
-        1.0f, -1.0f, -1.0f,  // 1: Bottom-back-right
-        1.0f,  1.0f, -1.0f,  // 2: Top-back-right
-        -1.0f,  1.0f, -1.0f,  // 3: Top-back-left
-        -1.0f, -1.0f,  1.0f,  // 4: Bottom-front-left
-        1.0f, -1.0f,  1.0f,  // 5: Bottom-front-right
-        1.0f,  1.0f,  1.0f,  // 6: Top-front-right
-        -1.0f,  1.0f,  1.0f   // 7: Top-front-left
-    };
+#define MAX_VERTEX_COUNT CHUNK_VOLUME*8
 
-    unsigned int indices[] = {
-        // Front face
-        4, 5, 6,
-        6, 7, 4,
+    float vertices[] = CUBE_VERTICES(0, 0, 0);
+    // float vertices[] = {
+    //     // Positions
+    //     -1.0f, -1.0f, -1.0f,  // 0: Bottom-back-left
+    //     1.0f, -1.0f, -1.0f,  // 1: Bottom-back-right
+    //     1.0f,  1.0f, -1.0f,  // 2: Top-back-right
+    //     -1.0f,  1.0f, -1.0f,  // 3: Top-back-left
+    //     -1.0f, -1.0f,  1.0f,  // 4: Bottom-front-left
+    //     1.0f, -1.0f,  1.0f,  // 5: Bottom-front-right
+    //     1.0f,  1.0f,  1.0f,  // 6: Top-front-right
+    //     -1.0f,  1.0f,  1.0f   // 7: Top-front-left
+    // };
 
-        // Back face
-        0, 1, 2,
-        2, 3, 0,
+    unsigned int indices[] = CUBE_INDICES(0);
+    // {
+    //     // Front face
+    //     4, 5, 6,
+    //     6, 7, 4,
 
-        // Left face
-        0, 4, 7,
-        7, 3, 0,
+    //     // Back face
+    //     0, 1, 2,
+    //     2, 3, 0,
 
-        // Right face
-        1, 5, 6,
-        6, 2, 1,
+    //     // Left face
+    //     0, 4, 7,
+    //     7, 3, 0,
 
-        // Top face
-        3, 7, 6,
-        6, 2, 3,
+    //     // Right face
+    //     1, 5, 6,
+    //     6, 2, 1,
 
-        // Bottom face
-        0, 4, 5,
-        5, 1, 0
-    };
+    //     // Top face
+    //     3, 7, 6,
+    //     6, 2, 3,
+
+    //     // Bottom face
+    //     0, 4, 5,
+    //     5, 1, 0
+    // };
 
     chunk->vaoID = create_vertex_array();
     bind_vertex_array(chunk->vaoID);
