@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-std=c99 -I./deps/glad/include/
+CFLAGS=-W -g -std=c99 -I./deps/glad/include/
 
 LDFLAGS=
 LDLIBS=-lopengl32 -lwinmm -lgdi32 -lSDL3 -lm

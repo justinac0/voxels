@@ -39,15 +39,15 @@
 
 bool running = false;
 
-void poll_sdl_events(SDL_Event *event) {
-    while (SDL_PollEvent(event)) {
-        switch (event->type) {
-            case SDL_EVENT_QUIT:
-                running = false;
-                break;
-        }
-    }
-}
+// void poll_sdl_events(SDL_Event *event) {
+//     while (SDL_PollEvent(event)) {
+//         switch (event->type) {
+//             case SDL_EVENT_QUIT:
+//                 running = false;
+//                 break;
+//         }
+//     }
+// }
 
 int main(int argc, char const *argv[]) {
     SDL_Window *window;
@@ -108,8 +108,8 @@ int main(int argc, char const *argv[]) {
     real aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
 
     // NOTE: Adjusting the fov flips the screen (flipped 180* x)?
-    real fov = 90;
-    Mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.02, 100, 90, aspect);
+    real fov = 90*180/3.14;
+    Mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.02, 100, fov, aspect);
 
     Mat4x4r model = mat4x4r_identity();
 
@@ -117,21 +117,19 @@ int main(int argc, char const *argv[]) {
     float i = 0;
 
     Camera camera;
-    camera_init(&camera, (Vec3r){1, 0, -2}, (Vec3r){0});
+    camera_init(&camera, (Vec3r){0, 0, -2});
 
     while (running) {
-        poll_sdl_events(&event);
-
+        SDL_PumpEvents();
+        SDL_WarpMouseInWindow(window, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
         if (is_key_down(SDLK_ESCAPE)) {
             running = false;
             break;
         }
 
         float mx, my;
-        float mx_old = mx, my_old = my;
-        SDL_GetMouseState(&mx, &my);
-        float dmx = mx - mx_old, dmy = my - my_old;
-        camera_move(&camera, dmx, dmy, SCREEN_WIDTH, SCREEN_HEIGHT, fov);
+        SDL_GetRelativeMouseState(&mx, &my);
+        camera_move(&camera, mx, my, SCREEN_WIDTH, SCREEN_HEIGHT, fov);
 
         glClearColor(0.2, 0.4, 0.6, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

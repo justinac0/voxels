@@ -82,71 +82,44 @@ Mat4x4r mat4x4r_scale(Mat4x4r* m, Vec3r* v) {
     return n;
 }
 
-Mat4x4r mat4x4r_translate(Mat4x4r* m, Vec3r* v) {
-    Mat4x4r n = *m;
+Mat4x4r mat4x4r_translate(Vec3r v) {
+    Mat4x4r n = mat4x4r_identity();
 
     for (size_t i = 0; i < 3; i++) {
-        n.m[3][i] += v->v[i];
+        n.m[3][i] += v.v[i];
     }
 
     return n;
 }
 
-Mat4x4r mat4x4r_rotate(Mat4x4r* m, Vec3r* axis, real angle) {
-    Quat q = quat_from_axis_angle(angle, axis->x, axis->y, 0);
+Mat4x4r mat4x4r_rotation(Quat q) {
+    real w = q.w;
+    real x = q.x;
+    real y = q.y;
+    real z = q.z;
+    
+    real ww = q.w*q.w;
+    real xx = q.x*q.x;
+    real yy = q.y*q.y;
+    real zz = q.z*q.z;
 
     Mat4x4r r = mat4x4r_identity();
-    r.m00 = 2*(q.q0*q.q0+q.q1*q.q1)-1;
-    r.m01 = 2*(q.q1*q.q2-q.q0*q.q3);
-    r.m02 = 2*(q.q1*q.q3+q.q0*q.q2);
+    r.m00 = ww+xx-yy-zz;
+    r.m01 = 2*x*y-2*w*z;
+    r.m02 = 2*x*z+2*w*y;
 
-    r.m10 = 2*(q.q1*q.q2+q.q0*q.q3);
-    r.m11 = 2*(q.q0*q.q0+q.q2*q.q2)-1;
-    r.m12 = 2*(q.q2*q.q3-q.q0*q.q1);
+    r.m10 = 2*x*y+2*w*z;
+    r.m11 = ww-xx+yy-zz;
+    r.m12 = 2*y*z-2*w*x;
 
-    r.m20 = 2*(q.q1*q.q3-q.q0*q.q2);
-    r.m21 = 2*(q.q2*q.q3+q.q0*q.q1);
-    r.m22 = 2*(q.q0*q.q0+q.q3*q.q3)-1;
+
+    r.m20 = 2*x*z-2*w*y;
+    r.m21 = 2*y*z+2*w*x;
+    r.m22 = ww-xx-yy+zz;
+
+    // r.m33 = 1;
 
     return r;
-}
-
-Mat4x4r mat4x4r_rotate_x(Mat4x4r* m, real angle) {
-    Mat4x4r n = *m;
-
-    n.m00 = 1.0;
-    n.m11 = cosf(angle);
-    n.m12 = -sinf(angle);
-    
-    n.m21 = sinf(angle);
-    n.m22 = cosf(angle);
-
-    return n;
-}
-
-Mat4x4r mat4x4r_rotate_y(Mat4x4r* m, real angle) {
-    Mat4x4r n = *m;
-    n.m00 = cosf(angle);
-    n.m02 = sinf(angle);
-
-    n.m12 = 1.0;
-
-    n.m20 = -sinf(angle);
-    n.m22 = cosf(angle);
-    
-    return n;
-}
-
-Mat4x4r mat4x4r_rotate_z(Mat4x4r* m, real angle) {
-    Mat4x4r n = *m;
-    
-    n.m00 = cosf(angle);
-    n.m01 = -sinf(angle);
-
-    n.m10 = sinf(angle);
-    n.m11 = cosf(angle);
-
-    return n;
 }
 
 Mat4x4r mat4x4r_perspective(real left, real right, real top, real bottom, real znear, real zfar, real fov, real aspect) {

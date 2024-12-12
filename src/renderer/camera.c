@@ -1,24 +1,52 @@
 #include "camera.h"
 
 void camera_init(Camera *camera, Vec3r position) {
-    camera->view = mat4x4r_lookat(vec3r_right(), vec3r_up(), vec3r_forward(), position);
+    camera->position = (Vec3r){
+        .x = position.x,
+        .y = position.y,
+        .z = position.z
+    };
+
+    camera->orientation = (Quat){0};
+
+    camera->view = mat4x4r_identity();
 }
 
 void camera_move(Camera *camera, real mouseX, real mouseY, size_t screenWidth, size_t screenHeight, real fov) {
-    real sensitivity = 0.05f;
+    real moveSpeed = 0.05;
 
-    if (mouseX == 0 && mouseY == 0) return;
+    // handle user input
+    real x = (is_key_down(SDLK_A) - is_key_down(SDLK_D)) * moveSpeed;
+    real y = (is_key_down(SDLK_LSHIFT) - is_key_down(SDLK_SPACE)) * moveSpeed;
+    real z = (is_key_down(SDLK_W) - is_key_down(SDLK_S)) * moveSpeed;
 
+    camera->position = (Vec3r){
+        .x = camera->position.x + x,
+        .y = camera->position.y + y,
+        .z = camera->position.z + z
+    };
+
+    Mat4x4r rotation = mat4x4r_identity();
+    Mat4x4r translation = mat4x4r_translate((Vec3r){x,y,z});
+
+    // handle mouse input
+    real sensitivity = 0.001f;
 
     Vec3r up = vec3r_up();
     Vec3r right = vec3r_right();
-    // Vec3r up = vec3r_normalize(vec3r_sub(camera->target, camera->position));
-    // Vec3r right = vec3r_normalize(vec3r_cross(forward, camera->up));
-    Mat4x4r rotationY = mat4x4r_rotate(&camera->view, &right, -mouseY * sensitivity);
-    Mat4x4r rotationX = mat4x4r_rotate(&camera->view, &up, -mouseX * sensitivity);
+    Vec3r forward = vec3r_forward();
 
-    camera->view = mat4x4r_mul(&camera->view, &rotationX);
-    camera->view = mat4x4r_mul(&camera->view, &rotationY);
+    real yaw = -mouseX * sensitivity;
+    real pitch = -mouseY * sensitivity;
 
-    printf("[MOUSE] mx: %02f, my: %02f\n", mouseX, mouseY);
+    Quat qx = quat_from_axis_angle(pitch, &right);
+    Quat qy = quat_from_axis_angle(yaw, &up);
+    Quat q = quat_mul(&qy, &qx);
+
+    Quat orientation = quat_identity();
+    camera->orientation = quat_mul(&orientation, &q);
+    rotation = mat4x4r_rotation(camera->orientation);
+
+    camera->view = mat4x4r_mul(&camera->view, &rotation);
+    camera->view = mat4x4r_mul(&camera->view, &translation);
 }
