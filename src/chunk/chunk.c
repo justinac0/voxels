@@ -61,44 +61,7 @@ void chunk_generate_mesh(Chunk *chunk) {
 #define MAX_VERTEX_COUNT CHUNK_VOLUME*8
 
     float vertices[] = CUBE_VERTICES(0, 0, 0);
-    // float vertices[] = {
-    //     // Positions
-    //     -1.0f, -1.0f, -1.0f,  // 0: Bottom-back-left
-    //     1.0f, -1.0f, -1.0f,  // 1: Bottom-back-right
-    //     1.0f,  1.0f, -1.0f,  // 2: Top-back-right
-    //     -1.0f,  1.0f, -1.0f,  // 3: Top-back-left
-    //     -1.0f, -1.0f,  1.0f,  // 4: Bottom-front-left
-    //     1.0f, -1.0f,  1.0f,  // 5: Bottom-front-right
-    //     1.0f,  1.0f,  1.0f,  // 6: Top-front-right
-    //     -1.0f,  1.0f,  1.0f   // 7: Top-front-left
-    // };
-
     unsigned int indices[] = CUBE_INDICES(0);
-    // {
-    //     // Front face
-    //     4, 5, 6,
-    //     6, 7, 4,
-
-    //     // Back face
-    //     0, 1, 2,
-    //     2, 3, 0,
-
-    //     // Left face
-    //     0, 4, 7,
-    //     7, 3, 0,
-
-    //     // Right face
-    //     1, 5, 6,
-    //     6, 2, 1,
-
-    //     // Top face
-    //     3, 7, 6,
-    //     6, 2, 3,
-
-    //     // Bottom face
-    //     0, 4, 5,
-    //     5, 1, 0
-    // };
 
     chunk->vaoID = create_vertex_array();
     bind_vertex_array(chunk->vaoID);
