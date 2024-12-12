@@ -111,8 +111,7 @@ int main(int argc, char const *argv[]) {
     float i = 0;
 
     Camera camera;
-    camera_init(&camera, (Vec3r){0, 0, -2});
-
+    camera_init(&camera, (Vec3r){0, 0, -3});
 
     while (running) {
         SDL_PumpEvents();

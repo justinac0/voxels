@@ -20,6 +20,7 @@ typedef struct {
     Voxel voxels[CHUNK_VOLUME];
     Vec3r position; // the smallest x, y, z value of the chunk
     GLuint vaoID;
+    GLuint eboID;
 } Chunk;
 
 // Generate Chunk Mesh

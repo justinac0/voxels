@@ -30,47 +30,60 @@ void chunk_generate_mesh(Chunk *chunk) {
     chunk->vaoID = create_vertex_array();
     bind_vertex_array(chunk->vaoID);
 
-    float vertices[] = {
-        -1f, -1f, 1f,
-        1f, -1f, 1f,
-        1f, 1f, 1f,
-        -1f, 1f, 1f,
+    float size = 0.5;
 
-        -1f, -1f, -1f,
-        1f, -1f, -1f,
-        1f, 1f, -1f,
-        -1f, 1f, -1f
+    float vertices[] = {
+        // Positions
+        -1.0f, -1.0f, -1.0f,  // 0: Bottom-back-left
+        1.0f, -1.0f, -1.0f,  // 1: Bottom-back-right
+        1.0f,  1.0f, -1.0f,  // 2: Top-back-right
+        -1.0f,  1.0f, -1.0f,  // 3: Top-back-left
+        -1.0f, -1.0f,  1.0f,  // 4: Bottom-front-left
+        1.0f, -1.0f,  1.0f,  // 5: Bottom-front-right
+        1.0f,  1.0f,  1.0f,  // 6: Top-front-right
+        -1.0f,  1.0f,  1.0f   // 7: Top-front-left
     };
 
-    int indicies[] {
+    unsigned int indices[] = {
+        // Front face
+        4, 5, 6,
+        6, 7, 4,
+
+        // Back face
         0, 1, 2,
         2, 3, 0,
 
+        // Left face
+        0, 4, 7,
+        7, 3, 0,
+
+        // Right face
         1, 5, 6,
         6, 2, 1,
 
-        7, 6, 5,
-        5, 4, 7,
+        // Top face
+        3, 7, 6,
+        6, 2, 3,
 
-        4, 0, 3,
-        3, 7, 4,
-
-        4, 5, 1,
-        1, 0, 4,
-
-        3, 2, 6,
-        6, 7, 3
+        // Bottom face
+        0, 4, 5,
+        5, 1, 0
     };
 
-    GLuint iboID = create_int_buffer(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW, indices, 0);
-    GLuint vboID = create_float_buffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, vertices, 8);
+    chunk->vaoID = create_vertex_array();
+    bind_vertex_array(chunk->vaoID);
+
+    GLuint vboID = create_float_buffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, vertices, sizeof(vertices));
     set_vertex_attrib_pointer(0, 3, GL_FLOAT, 0, NULL);
     enable_vertex_attrib_pointer(0);
+
+    chunk->eboID = create_int_buffer(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW, indices, sizeof(indices));
 
     bind_vertex_array(0);
 }
 
 void chunk_draw(Chunk *chunk) {
     bind_vertex_array(chunk->vaoID);
-    glDrawElements(GL_TRIANGLES. 36, GL_UNSIGNED_SHORT, NULL);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, chunk->eboID);
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }

@@ -10,6 +10,7 @@ void camera_init(Camera *camera, Vec3r position) {
     camera->orientation = (Quat){0};
 
     camera->view = mat4x4r_identity();
+    camera->view = mat4x4r_translate(camera->position);
 }
 
 void camera_move(Camera *camera, real mouseX, real mouseY, size_t screenWidth, size_t screenHeight, real fov) {
