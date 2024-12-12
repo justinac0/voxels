@@ -65,10 +65,28 @@ void camera_move(Camera *camera, real mouseX, real mouseY, size_t screenWidth, s
     Vec3r right = vec3r_right();
     Vec3r forward = vec3r_forward();
 
-    Quat yaw = quat_from_axis_angle(-mouseX * sensitivity, &right);
-    Mat4x4r yawMat = mat4x4r_rotation(yaw);
-    Quat pitch = quat_from_axis_angle(-mouseY * sensitivity, &up);
-    Mat4x4r pitchMat = mat4x4r_rotation(pitch);
+    real yaw = -mouseX * sensitivity;
+    real pitch = -mouseY * sensitivity;
+
+    Quat qx = quat_from_axis_angle(pitch, &right);
+    Quat qy = quat_from_axis_angle(yaw, &up);
+    Quat q = quat_mul(&qy, &qx);
+
+    Quat orientation = quat_identity();
+    camera->orientation = quat_mul(&orientation, &q);
+    camera->rotation = mat4x4r_rotation(camera->orientation);
+
+    camera->view = construct_view_matrix2(&camera->view, &camera->rotation, &translation);
+    // camera->view = construct_view_matrix(&camera->view, &camera->position, &camera->rotation);
+}
+
+    // rotate local x-axis for up, down
+    // rotate global y-axis for left, right
+    // Quat yaw = quat_from_axis_angle(-mouseX * sensitivity, &right);
+    // Mat4x4r yawMat = mat4x4r_rotation(yaw);
+    // Quat pitch = quat_from_axis_angle(-mouseY * sensitivity, &up);
+    // Mat4x4r pitchMat = mat4x4r_rotation(pitch);
+
 
     // camera->orientation = quat_mul(&pitch, &camera->orientation);
     // camera->orientation = quat_mul(&camera->orientation, &yaw);
@@ -81,9 +99,5 @@ void camera_move(Camera *camera, real mouseX, real mouseY, size_t screenWidth, s
     // Quaternion pitch = Quaternion.Euler(-Input.GetAxis("Vertical") * speed, 0f, 0f);
     // transform.rotation = transform.rotation * pitch; // pitch on the right.
 
-    camera->rotation = mat4x4r_mul(&yawMat, &camera->rotation);
-    camera->rotation = mat4x4r_mul(&camera->rotation, &pitchMat);
-
-    camera->view = construct_view_matrix2(&camera->view, &camera->rotation, &translation);
-    // camera->view = construct_view_matrix(&camera->view, &camera->position, &camera->rotation);
-}
+    // camera->rotation = mat4x4r_mul(&yawMat, &camera->rotation);
+    // camera->rotation = mat4x4r_mul(&camera->rotation, &pitchMat);
