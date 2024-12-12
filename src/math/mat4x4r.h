@@ -8,7 +8,7 @@
 #include "vec4r.h"
 #include "quat.h"
 
-typedef union Mat4x4r {
+typedef union {
     real m[4][4];
     struct {
         real m00, m01, m02, m03;

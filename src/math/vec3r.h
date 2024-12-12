@@ -3,7 +3,7 @@
 
 #include "type.h"
 
-typedef union Vec3r {
+typedef union {
     real v[3];
     struct {
         real x, y, z;

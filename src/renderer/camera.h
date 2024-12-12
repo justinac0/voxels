@@ -9,11 +9,11 @@
 #include "../math/vec3r.h"
 #include "../math/mat4x4r.h"
 
-typedef enum CameraMode {
+typedef enum {
     CAM_FREE_MOVE,
 } CameraMode;
 
-typedef struct Camera {
+typedef struct {
     Vec3r       position;
     Quat        orientation;
     Mat4x4r     view;

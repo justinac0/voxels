@@ -1,15 +1,16 @@
 #ifndef VOXEL_H
 #define VOXEL_H
 
-#include "../math/vmath.h"
+typedef enum {
+    VOXEL_TYPE_NONE  = 0,
+    VOXEL_TYPE_BLACK = 1,
+    VOXEL_TYPE_WHITE,
+} VoxelType;
 
-typedef union Voxel {
-    real data[10];
-    struct {
-        Vec3r position;
-        Vec3r normal;
-        Vec4r color;
-    };
+typedef struct {
+    uint16_t type;
 } Voxel;
+
+// Vec3r voxel_get_colour(VoxelType type);
 
 #endif // VOXEL_H

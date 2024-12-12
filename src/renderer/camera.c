@@ -13,7 +13,9 @@ void camera_init(Camera *camera, Vec3r position) {
 }
 
 void camera_move(Camera *camera, real mouseX, real mouseY, size_t screenWidth, size_t screenHeight, real fov) {
-    real moveSpeed = 0.05;
+    // camera controls - TODO: move this to camera struct once all is working... also add fixed game tick updates...
+    real moveSpeed = 0.01;
+    real sensitivity = 0.001f;
 
     // handle user input
     real x = (is_key_down(SDLK_A) - is_key_down(SDLK_D)) * moveSpeed;
@@ -30,8 +32,6 @@ void camera_move(Camera *camera, real mouseX, real mouseY, size_t screenWidth, s
     Mat4x4r translation = mat4x4r_translate((Vec3r){x,y,z});
 
     // handle mouse input
-    real sensitivity = 0.001f;
-
     Vec3r up = vec3r_up();
     Vec3r right = vec3r_right();
     Vec3r forward = vec3r_forward();

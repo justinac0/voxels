@@ -20,8 +20,9 @@
 #include "renderer/glhelp.h"
 #include "renderer/shader.h"
 #include "renderer/camera.h"
-#include "chunk/voxel.h"
+#include "chunk/chunk.h"
 #include "input/keyboard.h"
+#include "memory/arena.h"
 
 // TODO: common defs
 #define KB (1024)
@@ -82,28 +83,21 @@ int main(int argc, char const *argv[]) {
 
     int status = gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
     SDL_assert(status != 0);
-
     SDL_assert(SDL_GL_MakeCurrent(window, glctx));
 
     running = true;
 
     GLuint shaderProgram = create_shader_program("resources/shaders/triangle.vs", "resources/shaders/triangle.fs");
 
-    // triangle data
-    float vertices[] = {
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        0.0f,  1.0f, 0.0f
-    };
+    // takes in a position argument
+    Arena arena;
+    arena_make(&arena, 1 * sizeof(Chunk));
+    Chunk *chunk = chunk_create(&arena, vec3r_zero());
+    Voxel *vox = chunk_get_voxel(chunk, 15, 15, 15);
+    chunk_generate_mesh(chunk);
 
-    GLuint vaoID = create_vertex_array();
-    bind_vertex_array(vaoID);
-
-    GLuint vboID = create_float_buffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, vertices, 9);
-    set_vertex_attrib_pointer(0, 3, GL_FLOAT, 0, NULL);
-    enable_vertex_attrib_pointer(0);
-
-    bind_vertex_array(0);
+    printf("voxel size: %lu\n", sizeof(Voxel));
+    printf("chunk size: %lu\n", sizeof(Chunk));
 
     real aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
 
@@ -119,6 +113,7 @@ int main(int argc, char const *argv[]) {
     Camera camera;
     camera_init(&camera, (Vec3r){0, 0, -2});
 
+
     while (running) {
         SDL_PumpEvents();
         SDL_WarpMouseInWindow(window, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
@@ -131,6 +126,7 @@ int main(int argc, char const *argv[]) {
         SDL_GetRelativeMouseState(&mx, &my);
         camera_move(&camera, mx, my, SCREEN_WIDTH, SCREEN_HEIGHT, fov);
 
+        // draw
         glClearColor(0.2, 0.4, 0.6, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -139,13 +135,12 @@ int main(int argc, char const *argv[]) {
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "m_transform"), 1, GL_FALSE, (float*)model.m);
 
         glUseProgram(shaderProgram);
-        bind_vertex_array(vaoID);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        // SDL3 how to get keyboard input to camera
+        chunk_draw(chunk);
 
         SDL_GL_SwapWindow(window);
     }
 
+    arena_free(&arena);
     SDL_GL_DestroyContext(glctx);
     SDL_DestroyWindow(window);
 

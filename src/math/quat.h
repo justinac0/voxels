@@ -7,11 +7,11 @@
 #include "vec3r.h"
 #include "vec4r.h"
 
-typedef struct Quat {
+typedef struct {
     real w, x, y, z;
 } Quat;
 
-typedef struct AxisAngle {
+typedef struct {
     real x, y, z;
     real theta;
 } AxisAngle;
