@@ -1,6 +1,29 @@
 #include "chunk.h"
 
-#include <stdio.h>
+#define CUBE_VERTS { \
+    -0.5, -0.5, -0.5, \
+     0.5, -0.5, -0.5, \
+     0.5,  0.5, -0.5, \
+    -0.5,  0.5, -0.5, \
+    -0.5, -0.5,  0.5, \
+     0.5, -0.5,  0.5, \
+     0.5,  0.5,  0.5, \
+    -0.5,  0.5,  0.5 \
+}
+#define CUBE_IDXS { \
+    4, 5, 6, \
+    6, 7, 4, \
+    0, 1, 2, \
+    2, 3, 0, \
+    0, 4, 7, \
+    7, 3, 0, \
+    1, 5, 6, \
+    6, 2, 1, \
+    3, 7, 6, \
+    6, 2, 3, \
+    0, 4, 5, \
+    5, 1, 0 \
+}
 
 Chunk *chunk_create(Arena *arena, Vec3r position) {
     Chunk *chunk = arena_alloc(arena, sizeof(Chunk));
@@ -32,34 +55,6 @@ Voxel *chunk_get_voxel(Chunk *chunk, uint8_t x, uint8_t y, uint8_t z) {
     return &chunk->voxels[chunk_get_index(x, y, z)];
 }
 
-#define CUBE_VERTS { \
-    -0.5, -0.5, -0.5, \
-     0.5, -0.5, -0.5, \
-     0.5,  0.5, -0.5, \
-    -0.5,  0.5, -0.5, \
-    -0.5, -0.5,  0.5, \
-     0.5, -0.5,  0.5, \
-     0.5,  0.5,  0.5, \
-    -0.5,  0.5,  0.5 \
-}
-
-#define CUBE_IDXS { \
-    4, 5, 6, \
-    6, 7, 4, \
-    0, 1, 2, \
-    2, 3, 0, \
-    0, 4, 7, \
-    7, 3, 0, \
-    1, 5, 6, \
-    6, 2, 1, \
-    3, 7, 6, \
-    6, 2, 3, \
-    0, 4, 5, \
-    5, 1, 0 \
-}
-
-#define CUBE_SIZE_SCALING 0.4
-
 void add_cube_vertices(Vec3r *vertices, size_t *index, uint8_t x, uint8_t y, uint8_t z) {
     Vec3r cubeVertices[] = CUBE_VERTS;
     Vec3r offset = {x, y, z};
@@ -89,32 +84,6 @@ void add_cube_indices(Vec3i *indices, size_t *index, uint8_t x, uint8_t y, uint8
         indices[(*index)++] = cubeIndices[i];
     }
 }
-
-// #define CUBE_VERTICES(x, y, z, size) { \
-//     -size + x, -size + y, -size + z, \
-//      size + x, -size + y, -size + z, \
-//      size + x,  size + y, -size + z, \
-//     -size + x,  size + y, -size + z, \
-//     -size + x, -size + y,  size + z, \
-//      size + x, -size + y,  size + z, \
-//      size + x,  size + y,  size + z, \
-//     -size + x,  size + y,  size + z \
-// }
-
-// #define CUBE_INDICES(i) { \
-//     4+(i*8), 5+(i*8), 6+(i*8), \
-//     6+(i*8), 7+(i*8), 4+(i*8), \
-//     0+(i*8), 1+(i*8), 2+(i*8), \
-//     2+(i*8), 3+(i*8), 0+(i*8), \
-//     0+(i*8), 4+(i*8), 7+(i*8), \
-//     7+(i*8), 3+(i*8), 0+(i*8), \
-//     1+(i*8), 5+(i*8), 6+(i*8), \
-//     6+(i*8), 2+(i*8), 1+(i*8), \
-//     3+(i*8), 7+(i*8), 6+(i*8), \
-//     6+(i*8), 2+(i*8), 3+(i*8), \
-//     0+(i*8), 4+(i*8), 5+(i*8), \
-//     5+(i*8), 1+(i*8), 0+(i*8)  \
-// }
 
 #define VERTEX_COUNT (CHUNK_VOLUME * 8 * 3)
 #define INDEX_COUNT (CHUNK_VOLUME * 6 * 2 * 3)
@@ -157,5 +126,5 @@ void chunk_generate_mesh(Chunk *chunk) {
 void chunk_draw(Chunk *chunk) {
     bind_vertex_array(chunk->vaoID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, chunk->eboID);
-    glDrawElements(GL_TRIANGLES, 36*CHUNK_VOLUME, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, CUBE_VERTS_SIZE*CHUNK_VOLUME, GL_UNSIGNED_INT, 0);
 }

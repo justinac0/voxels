@@ -31,7 +31,6 @@ Mat4x4r mat4x4r_scale(Mat4x4r* m, Vec3r* scale);
 Mat4x4r mat4x4r_translation(Vec3r v);
 Mat4x4r mat4x4r_rotation(Quat q);
 Mat4x4r mat4x4r_perspective(real l, real r, real t, real b, real near, real far, real fov, real aspect);
-Mat4x4r mat4x4r_lookat(Vec3r right, Vec3r up, Vec3r forward, Vec3r eye);
 Mat4x4r mat4x4r_print(Mat4x4r* m);
 
 #endif // MAT4X4R_H

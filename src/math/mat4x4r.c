@@ -127,41 +127,18 @@ Mat4x4r mat4x4r_rotation(Quat q) {
 Mat4x4r mat4x4r_perspective(real left, real right, real top, real bottom, real znear, real zfar, real fov, real aspect) {
     Mat4x4r p = mat4x4r_identity();
 
-    // What happens when fov > 75? < 90? > 90?
-    real range = 1.0f / tan(fov / 2.0);
+    real range = aspect * tan(fov / 2.0);
 
-    p.m00 = range / aspect;
+    p.m00 = 1/range;
 
-    p.m11 = range;
+    p.m11 = 1/tan(fov / 2.0);
 
     p.m22 = -(zfar + znear) / (zfar - znear);
-    p.m23 = -1.0;
+    p.m23 = 1;
 
     p.m32 = -((2.0 * zfar * znear) / (zfar - znear));
 
     return p;
-}
-
-Mat4x4r mat4x4r_lookat(Vec3r right, Vec3r up, Vec3r forward, Vec3r eye) {
-    Mat4x4r m = mat4x4r_identity();
-    m.m00 = right.x;
-    m.m10 = right.y;
-    m.m20 = right.z;
-    m.m30 = -vec3r_dot(&right, &eye);
-
-    m.m01 = up.x;
-    m.m11 = up.y;
-    m.m21 = up.z;
-    m.m31 = -vec3r_dot(&up, &eye);
-
-    m.m02 = -forward.x;
-    m.m12 = -forward.y;
-    m.m22 = -forward.z;
-    m.m32 = vec3r_dot(&forward, &eye);
-
-    m.m33 = 1;
-
-    return m;
 }
 
 Mat4x4r mat4x4r_print(Mat4x4r* m) {

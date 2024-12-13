@@ -1,13 +1,5 @@
 #include "quat.h"
 
-
-AxisAngle axis_angle(real theta, Vec3r position) {
-    return (AxisAngle){
-        .theta = theta,
-        .position = position
-    };
-}
-
 Quat quat_from_axis_angle(AxisAngle axis) {
     Quat quat;
     quat.w = cosf(axis.theta/2);
@@ -29,22 +21,6 @@ Quat quat_identity() {
         .y = 0,
         .z = 0
     };
-}
-
-Vec3r quat_rotate_vec3r(Quat* quat, Vec3r* vec) {
-    Quat v;
-    v.w = 0;
-    v.x = vec->x;
-    v.y = vec->y;
-    v.z = vec->z;
-
-    Quat vp = quat_mul(quat, &v);
-    Quat conj = quat_conj(quat);
-    vp = quat_mul(&vp, &conj);
-
-    AxisAngle result = axis_angle_from_quat(&vp);
-
-    return result.position;
 }
 
 Quat quat_unit(Quat* quat) {
@@ -81,6 +57,29 @@ Quat quat_mul(Quat* a, Quat* b) {
     q.z = a->w * b->z + a->z * b->w + a->x * b->y - a->y * b->x;
 
     return q;
+}
+
+Vec3r quat_rotate_vec3r(Quat* quat, Vec3r* vec) {
+    Quat v;
+    v.w = 0;
+    v.x = vec->x;
+    v.y = vec->y;
+    v.z = vec->z;
+
+    Quat vp = quat_mul(quat, &v);
+    Quat conj = quat_conj(quat);
+    vp = quat_mul(&vp, &conj);
+
+    AxisAngle result = axis_angle_from_quat(&vp);
+
+    return result.position;
+}
+
+AxisAngle axis_angle(real theta, Vec3r position) {
+    return (AxisAngle){
+        .theta = theta,
+        .position = position
+    };
 }
 
 AxisAngle axis_angle_from_quat(Quat *quat) {

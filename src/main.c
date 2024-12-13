@@ -99,11 +99,10 @@ int main(int argc, char const *argv[]) {
     printf("voxel size: %lu\n", sizeof(Voxel));
     printf("chunk size: %lu\n", sizeof(Chunk));
 
-    real aspect = 1;
+    real aspect = SCREEN_WIDTH/SCREEN_HEIGHT*2;
 
-    // NOTE: Adjusting the fov flips the screen (flipped 180* x)?
-    real fov = 90*180/3.14;
-    Mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.02, 100, fov, aspect);
+    real fov = DEG2RAD(50);
+    Mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.002, 100, fov, aspect);
 
     Mat4x4r model = mat4x4r_identity();
 

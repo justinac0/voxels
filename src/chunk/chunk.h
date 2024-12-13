@@ -1,7 +1,9 @@
 #ifndef CHUNK_H
 #define CHUNK_H
 
+#include <stdio.h>
 #include <stdint.h>
+
 #include "../renderer/glhelp.h"
 #include "../math/vec3r.h"
 #include "../memory/arena.h"
@@ -10,7 +12,10 @@
 #define CHUNK_SIZE 32
 #define CHUNK_AREA (CHUNK_SIZE*CHUNK_SIZE)
 #define CHUNK_VOLUME (CHUNK_SIZE*CHUNK_SIZE*CHUNK_SIZE)
+#define CUBE_VERTS_SIZE (36)
+#define CUBE_SIZE_SCALING 0.4
 
+// Normal calculations: https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
 typedef struct {
     Voxel voxels[CHUNK_VOLUME];
     Vec3r position; // the smallest x, y, z value of the chunk
