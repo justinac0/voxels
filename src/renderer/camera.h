@@ -4,10 +4,8 @@
 #include <stdio.h>
 
 #include "../input/keyboard.h"
-#include "../math/quat.h"
 
-#include "../math/vec3r.h"
-#include "../math/mat4x4r.h"
+#include "../math/vmath.h"
 
 typedef enum {
     CAM_FREE_MOVE,
@@ -17,12 +15,10 @@ typedef struct {
     Vec3r       position;
     Quat        orientation;
     Mat4x4r     view;
-    Mat4x4r     rotation;
-    Mat4x4r     translation;
     CameraMode  mode;
 } Camera;
 
 void camera_init(Camera *camera, Vec3r position);
-void camera_move(Camera *camera, real mouseX, real mouseY, size_t screenWidth, size_t screenHeight, real fov);
+void camera_move(Camera *camera, real mouseX, real mouseY);
 
 #endif // CAMERA_H

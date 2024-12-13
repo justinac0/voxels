@@ -37,6 +37,13 @@
 // 
 // 
 
+#ifndef PI
+#define PI (3.14159265358979323846)
+#endif
+
+#define DEG2RAD(deg) (deg*PI/180)
+#define RAD2DEG(rad) (rad*180/PI)
+
 #include "type.h"
 #include "vec3r.h"
 #include "vec4r.h"

@@ -12,11 +12,13 @@ typedef struct {
 } Quat;
 
 typedef struct {
-    real x, y, z;
+    Vec3r position;
     real theta;
 } AxisAngle;
 
-Quat quat_from_axis_angle(real theta, Vec3r* v);
+AxisAngle axis_angle(real theta, Vec3r position);
+
+Quat quat_from_axis_angle(AxisAngle axis);
 real quat_mag(Quat* quat);
 Quat quat_unit(Quat* quat);
 Quat quat_identity();

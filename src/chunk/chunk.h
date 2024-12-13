@@ -7,7 +7,7 @@
 #include "../memory/arena.h"
 #include "voxel.h"
 
-#define CHUNK_SIZE 16 // 16
+#define CHUNK_SIZE 32
 #define CHUNK_AREA (CHUNK_SIZE*CHUNK_SIZE)
 #define CHUNK_VOLUME (CHUNK_SIZE*CHUNK_SIZE*CHUNK_SIZE)
 
@@ -19,6 +19,7 @@ typedef struct {
 } Chunk;
 
 Chunk *chunk_create(Arena *arena, Vec3r position);
+size_t chunk_get_voxel_index(uint8_t x, uint8_t y, uint8_t z);
 Voxel *chunk_get_voxel(Chunk *chunk, uint8_t x, uint8_t y, uint8_t z);
 void chunk_generate_mesh(Chunk *chunk);
 void chunk_draw(Chunk *chunk);

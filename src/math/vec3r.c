@@ -1,5 +1,13 @@
 #include "vec3r.h"
 
+Vec3r vec3r(real x, real y, real z) {
+    return (Vec3r){
+        .x = x,
+        .y = y,
+        .z = z
+    };
+}
+
 Vec3r vec3r_add(Vec3r* a, Vec3r* b) {
     Vec3r c;
 

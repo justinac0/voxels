@@ -97,27 +97,29 @@ Mat4x4r mat4x4r_rotation(Quat q) {
     real x = q.x;
     real y = q.y;
     real z = q.z;
-    
-    real ww = q.w*q.w;
-    real xx = q.x*q.x;
-    real yy = q.y*q.y;
-    real zz = q.z*q.z;
+
+    real xx = x * x;
+    real yy = y * y;
+    real zz = z * z;
+    real xy = x * y;
+    real xz = x * z;
+    real yz = y * z;
+    real wx = w * x;
+    real wy = w * y;
+    real wz = w * z;
 
     Mat4x4r r = mat4x4r_identity();
-    r.m00 = ww+xx-yy-zz;
-    r.m01 = 2*x*y-2*w*z;
-    r.m02 = 2*x*z+2*w*y;
+    r.m00 = 1 - 2 * (yy + zz);
+    r.m01 = 2 * (xy - wz);
+    r.m02 = 2 * (xz + wy);
 
-    r.m10 = 2*x*y+2*w*z;
-    r.m11 = ww-xx+yy-zz;
-    r.m12 = 2*y*z-2*w*x;
+    r.m10 = 2 * (xy + wz);
+    r.m11 = 1 - 2 * (xx + zz);
+    r.m12 = 2 * (yz - wx);
 
-
-    r.m20 = 2*x*z-2*w*y;
-    r.m21 = 2*y*z+2*w*x;
-    r.m22 = ww-xx-yy+zz;
-
-    // r.m33 = 1;
+    r.m20 = 2 * (xz - wy);
+    r.m21 = 2 * (yz + wx);
+    r.m22 = 1 - 2 * (xx + yy);
 
     return r;
 }

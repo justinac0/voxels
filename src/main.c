@@ -99,7 +99,7 @@ int main(int argc, char const *argv[]) {
     printf("voxel size: %lu\n", sizeof(Voxel));
     printf("chunk size: %lu\n", sizeof(Chunk));
 
-    real aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+    real aspect = 1;
 
     // NOTE: Adjusting the fov flips the screen (flipped 180* x)?
     real fov = 90*180/3.14;
@@ -112,7 +112,6 @@ int main(int argc, char const *argv[]) {
 
     Camera camera;
     camera_init(&camera, (Vec3r){0, 0, -3});
-
     while (running) {
         SDL_PumpEvents();
         SDL_WarpMouseInWindow(window, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
@@ -121,9 +120,15 @@ int main(int argc, char const *argv[]) {
             break;
         }
 
+        if (is_key_down(SDLK_LCTRL)) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        } else {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+
         float mx, my;
         SDL_GetRelativeMouseState(&mx, &my);
-        camera_move(&camera, mx, my, SCREEN_WIDTH, SCREEN_HEIGHT, fov);
+        camera_move(&camera, mx, my);
 
         // draw
         glClearColor(0.2, 0.4, 0.6, 1);
