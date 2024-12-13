@@ -30,7 +30,23 @@ Quat quat_identity() {
         .z = 0
     };
 }
-#include <stdio.h>
+
+Vec3r quat_rotate_vec3r(Quat* quat, Vec3r* vec) {
+    Quat v;
+    v.w = 0;
+    v.x = vec->x;
+    v.y = vec->y;
+    v.z = vec->z;
+
+    Quat vp = quat_mul(quat, &v);
+    Quat conj = quat_conj(quat);
+    vp = quat_mul(&vp, &conj);
+
+    AxisAngle result = axis_angle_from_quat(&vp);
+
+    return result.position;
+}
+
 Quat quat_unit(Quat* quat) {
     real mag = quat_mag(quat);
 
@@ -70,9 +86,12 @@ Quat quat_mul(Quat* a, Quat* b) {
 AxisAngle axis_angle_from_quat(Quat *quat) {
     AxisAngle axis;
     axis.theta = 2*acos(quat->w);
-    axis.position.x = quat->x / sin(axis.theta/2);
-    axis.position.y = quat->y / sin(axis.theta/2);
-    axis.position.z = quat->z / sin(axis.theta/2);
+    axis.position = vec3r_zero();
+    if (axis.theta != 0) {
+        axis.position.x = quat->x / sin(axis.theta/2);
+        axis.position.y = quat->y / sin(axis.theta/2);
+        axis.position.z = quat->z / sin(axis.theta/2);
+    }
 
     return axis;
 }

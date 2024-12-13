@@ -25,12 +25,10 @@ void camera_move(Camera *camera, real mouseX, real mouseY) {
     real moveSpeed = 0.1;
     real sensitivity = 0.001f;
 
-    real x = -(is_key_down(SDLK_A) - is_key_down(SDLK_D)) * moveSpeed;
-    real z = -(is_key_down(SDLK_W) - is_key_down(SDLK_S)) * moveSpeed;
-    real y = -(is_key_down(SDLK_LSHIFT) - is_key_down(SDLK_SPACE)) * moveSpeed;
+    real x = (is_key_down(SDLK_A) - is_key_down(SDLK_D)) * moveSpeed;
+    real z = (is_key_down(SDLK_W) - is_key_down(SDLK_S)) * moveSpeed;
+    real y = (is_key_down(SDLK_LSHIFT) - is_key_down(SDLK_SPACE)) * moveSpeed;
 
-    Vec3r offs = vec3r(-x, -y, -z);
-    camera->position = vec3r_add(&camera->position, &offs);
 
     real yaw = -mouseX * sensitivity;
     real pitch = -mouseY * sensitivity;
@@ -45,10 +43,13 @@ void camera_move(Camera *camera, real mouseX, real mouseY) {
     camera->orientation = quat_mul(&camera->orientation, &qx);
     camera->orientation = quat_unit(&camera->orientation);
 
+    Vec3r localMove = vec3r(x, y, z);
+    Vec3r worldMove = quat_rotate_vec3r(&camera->orientation, &localMove);
+    worldMove.y = localMove.y;
+
+    camera->position = vec3r_add(&camera->position, &worldMove);
     Mat4x4r T = mat4x4r_translation(camera->position);
     Mat4x4r R = mat4x4r_rotation(camera->orientation);
 
     camera->view = mat4x4r_mul(&T, &R);
-
-    // mat4x4r_print(&camera->view);
 }
