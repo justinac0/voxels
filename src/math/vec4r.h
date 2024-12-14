@@ -13,6 +13,7 @@ typedef union {
     };
 } Vec4r;
 
+Vec4r vec4r(real x, real y, real z, real w);
 Vec4r vec4r_add(Vec4r* a, Vec4r* b);
 Vec4r vec4r_sub(Vec4r* a, Vec4r* b);
 Vec4r vec4r_mul(Vec4r* a, Vec4r* b);

@@ -1,5 +1,14 @@
 #include "vec4r.h"
 
+Vec4r vec4r(real x, real y, real z, real w) {
+    return (Vec4r){
+        .x = x,
+        .y = y,
+        .z = z,
+        .w = w
+    };
+}
+
 Vec4r vec4r_add(Vec4r* a, Vec4r* b) {
     Vec4r c;
 

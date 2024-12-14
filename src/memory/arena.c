@@ -14,7 +14,7 @@ size_t align_up(size_t offset, size_t alignment) {
     return (offset + mask) & ~mask;
 }
 
-void arena_make(Arena *arena, size_t size) {
+void arena_make(Arena* arena, size_t size) {
     arena->base = malloc(size);
     assert(arena->base);
 
@@ -24,16 +24,16 @@ void arena_make(Arena *arena, size_t size) {
     arena->size = size;
 }
 
-void arena_free(Arena *arena) {
+void arena_free(Arena* arena) {
     free(arena->base);
 }
 
-void arena_clear(Arena *arena) {
+void arena_clear(Arena* arena) {
     memset(arena->base, 0, arena->size);
     arena->offset = arena->base;
 }
 
-void *arena_alloc(Arena *arena, size_t size) {
+void* arena_alloc(Arena *arena, size_t size) {
     size_t offset = arena->offset - arena->base;
     size_t align_offset = align_up(offset, DEFAULT_ALIGN);
     if (align_offset + size > arena->size) {
@@ -41,8 +41,8 @@ void *arena_alloc(Arena *arena, size_t size) {
         return NULL;
     }
 
-    void *start = arena->offset;
-    arena->offset += size;
+    void* start = arena->offset;
+    arena->offset += size + align_offset;
 
     return start;
 }

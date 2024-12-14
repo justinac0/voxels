@@ -18,8 +18,6 @@ Mat4x4r construct_view_matrix(Mat4x4r* view, Mat4x4r* rotation, Mat4x4r* transla
     return v;
 }
 
-#define MAX_PITCH 80
-
 void camera_move(Camera *camera, real mouseX, real mouseY) {
     real moveSpeed = 0.01;
     real sensitivity = 0.001f;
@@ -47,7 +45,7 @@ void camera_move(Camera *camera, real mouseX, real mouseY) {
     Mat4x4r R = mat4x4r_rotation(camera->orientation);
 
     if (is_key_down(SDLK_R)) {
-        camera->position = vec3r_zero();
+        camera->position = (Vec3r){-8,-8,24};
         camera->orientation = quat_identity();
     }
 

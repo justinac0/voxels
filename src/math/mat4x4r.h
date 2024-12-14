@@ -10,6 +10,7 @@
 
 typedef union {
     real m[4][4];
+    real v[16];
     struct {
         real m00, m01, m02, m03;
         real m10, m11, m12, m13;
@@ -30,7 +31,7 @@ Mat4x4r mat4x4r_mul_scalar(Mat4x4r* m, real value);
 Mat4x4r mat4x4r_scale(Mat4x4r* m, Vec3r* scale);
 Mat4x4r mat4x4r_translation(Vec3r v);
 Mat4x4r mat4x4r_rotation(Quat q);
-Mat4x4r mat4x4r_perspective(real l, real r, real t, real b, real near, real far, real fov, real aspect);
+Mat4x4r mat4x4r_perspective(real left, real right, real top, real bottom, real znear, real zfar, real fov, real aspect);
 Mat4x4r mat4x4r_print(Mat4x4r* m);
 
 #endif // MAT4X4R_H

@@ -40,16 +40,6 @@
 
 bool running = false;
 
-// void poll_sdl_events(SDL_Event *event) {
-//     while (SDL_PollEvent(event)) {
-//         switch (event->type) {
-//             case SDL_EVENT_QUIT:
-//                 running = false;
-//                 break;
-//         }
-//     }
-// }
-
 int main(int argc, char const *argv[]) {
     SDL_Window *window;
     SDL_assert(SDL_Init(SDL_INIT_VIDEO));
@@ -90,27 +80,28 @@ int main(int argc, char const *argv[]) {
     GLuint shaderProgram = create_shader_program("resources/shaders/triangle.vs", "resources/shaders/triangle.fs");
 
     // takes in a position argument
-    Arena arena;
-    arena_make(&arena, 1 * sizeof(Chunk));
-    Chunk *chunk = chunk_create(&arena, vec3r_zero());
-    Voxel *vox = chunk_get_voxel(chunk, 15, 15, 15);
-    chunk_generate_mesh(chunk);
+    Arena chunkArena;
+    arena_make(&chunkArena, sizeof(Chunk));
+    Chunk *chunk = chunk_create(&chunkArena, vec3r_zero());
+    chunk_generate(chunk);
+    chunk_make_mesh(chunk);
 
     printf("voxel size: %lu\n", sizeof(Voxel));
     printf("chunk size: %lu\n", sizeof(Chunk));
 
-    real aspect = SCREEN_WIDTH/SCREEN_HEIGHT*2;
+    real aspect = 2;
 
-    real fov = DEG2RAD(50);
-    Mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.002, 100, fov, aspect);
-
+    real fov = 20;
+    Mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.02, 200, fov, aspect);
     Mat4x4r model = mat4x4r_identity();
 
-    SDL_Event event;
-    float i = 0;
+    glFrontFace(GL_CW); 
+    glEnable(GL_CULL_FACE); 
+    glCullFace(GL_FRONT);
 
+    SDL_Event event;
     Camera camera;
-    camera_init(&camera, (Vec3r){0, 0, -3});
+    camera_init(&camera, (Vec3r){-8, -8, 24});
     while (running) {
         SDL_PumpEvents();
         SDL_WarpMouseInWindow(window, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
@@ -143,7 +134,8 @@ int main(int argc, char const *argv[]) {
         SDL_GL_SwapWindow(window);
     }
 
-    arena_free(&arena);
+    chunk_free_mesh(chunk);
+    arena_free(&chunkArena);
     SDL_GL_DestroyContext(glctx);
     SDL_DestroyWindow(window);
 
