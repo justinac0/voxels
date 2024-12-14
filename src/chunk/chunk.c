@@ -49,7 +49,36 @@ size_t indexIndex = 0;
     0,3,1,\
     0,2,3,\
 }
-
+#define RIGHT_FACE_VERTS {\
+    -0.5,  0.5, -0.5,\
+    -0.5,  0.5,  0.5,\
+    -0.5, -0.5, -0.5,\
+    -0.5, -0.5,  0.5,\
+}
+#define RIGHT_FACE_INDS {\
+    0,3,1,\
+    0,2,3,\
+}
+#define TOP_FACE_VERTS {\
+    -0.5,  0.5,  0.5,\
+     0.5,  0.5,  0.5,\
+    -0.5,  0.5, -0.5,\
+     0.5,  0.5, -0.5,\
+}
+#define TOP_FACE_INDS {\
+    0,3,1,\
+    0,2,3,\
+}
+#define BOTTOM_FACE_VERTS {\
+    -0.5, -0.5,  0.5,\
+     0.5, -0.5,  0.5,\
+    -0.5, -0.5, -0.5,\
+     0.5, -0.5, -0.5\
+}
+#define BOTTOM_FACE_INDS {\
+    0,1,3,\
+    0,3,2,\
+}
 // float normalList[VERTEX_COUNT];
 // size_t normalIndex = 0;
 
@@ -242,10 +271,42 @@ void generate_cube_faces(Vec3r* chunkPos, Vec3r* centerPos, Voxel* center, Voxel
     // TODO: fill in vertices, color, normals : vert index winding order (Counter Clockwise)
     Vec4r color = voxel_color(center->type);
     if (!top) {
+        Vec3r verts[] = TOP_FACE_VERTS;
+        unsigned int idx[] = TOP_FACE_INDS;
 
+        // record where the indices for this face start
+        size_t indiceOffset = vertexIndex;
+
+        float x = chunkPos->x + centerPos->x;
+        float y = chunkPos->y + centerPos->y;
+        float z = chunkPos->z + centerPos->z;
+
+        for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
+            ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
+            ADD_COLOUR(color.r, color.g, color.b);
+        }
+        for (int i = 0; i < 2; i++) {
+            ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
+        }
     }
     if (!bottom) {
-        
+        Vec3r verts[] = BOTTOM_FACE_VERTS;
+        unsigned int idx[] = BOTTOM_FACE_INDS;
+
+        // record where the indices for this face start
+        size_t indiceOffset = vertexIndex;
+
+        float x = chunkPos->x + centerPos->x;
+        float y = chunkPos->y + centerPos->y;
+        float z = chunkPos->z + centerPos->z;
+
+        for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
+            ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
+            ADD_COLOUR(color.r, color.g, color.b);
+        }
+        for (int i = 0; i < 2; i++) {
+            ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
+        }
     }
     if (!left) {
         Vec3r verts[] = LEFT_FACE_VERTS;
@@ -267,7 +328,23 @@ void generate_cube_faces(Vec3r* chunkPos, Vec3r* centerPos, Voxel* center, Voxel
         }
     }
     if (!right) {
-        
+        Vec3r verts[] = RIGHT_FACE_VERTS;
+        unsigned int idx[] = RIGHT_FACE_INDS;
+
+        // record where the indices for this face start
+        size_t indiceOffset = vertexIndex;
+
+        float x = chunkPos->x + centerPos->x;
+        float y = chunkPos->y + centerPos->y;
+        float z = chunkPos->z + centerPos->z;
+
+        for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
+            ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
+            ADD_COLOUR(color.r, color.g, color.b);
+        }
+        for (int i = 0; i < 2; i++) {
+            ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
+        }
     }
     if (!front) {
         Vec3r verts[] = FRONT_FACE_VERTS;
@@ -315,7 +392,7 @@ void chunk_make_mesh2(Chunk *chunk) {
             for (int8_t z = 0; z < CHUNK_SIZE; z++) {
                 Voxel *voxel = chunk_get_voxel(chunk, x, y, z);
                 Voxel *top = chunk_get_voxel(chunk, x, y+1, z);
-                Voxel *bottom = chunk_get_voxel(chunk, x-1, y, z);
+                Voxel *bottom = chunk_get_voxel(chunk, x, y-1, z);
                 Voxel *left = chunk_get_voxel(chunk, x-1, y, z);
                 Voxel *right = chunk_get_voxel(chunk, x+1, y, z);
                 Voxel *front = chunk_get_voxel(chunk, x, y, z+1);
@@ -360,78 +437,3 @@ void chunk_draw(Chunk *chunk) {
     glDrawElements(GL_TRIANGLES, indexIndex, GL_UNSIGNED_INT, 0);
     // printf("idx: %d\n", indexIndex);
 }
-
-// float verts[] = {
-//     // front
-//     -1,  1, -1, // 0
-//      1,  1, -1, // 1
-//     -1, -1, -1, // 2
-//      1, -1, -1, // 3
-//     // back
-//     -1,  1, 1, // 4
-//      1,  1, 1, // 5
-//     -1, -1, 1, // 6
-//      1, -1, 1, // 7
-//     // left
-//      1,  1, -1, // 8
-//      1,  1,  1, // 9
-//      1, -1, -1, // 10
-//      1, -1,  1, // 11
-//     // right
-//     -1,  1, -1, // 12
-//     -1,  1,  1, // 13
-//     -1, -1, -1, // 14
-//     -1, -1,  1, // 15
-//     // top
-//     -1, 1,  1, // 16
-//      1, 1,  1, // 17
-//     -1, 1, -1, // 18
-//      1, 1, -1, // 19
-//     // bottom
-//     -1, -1,  1, // 20
-//      1, -1,  1, // 21
-//     -1, -1, -1, // 22
-//      1, -1, -1, // 23
-// };
-
-// float colors[] = {
-//     255,0,0,
-//     0,255,0,
-//     0,0,255,
-//     85,0,85,
-//     255,0,0,
-//     0,255,0,
-//     0,0,255,
-//     85,0,85,
-//     255,0,0,
-//     0,255,0,
-//     0,0,255,
-//     85,0,85,
-//     255,0,0,
-//     0,255,0,
-//     0,0,255,
-//     85,0,85,
-//     255,0,0,
-//     0,255,0,
-//     0,0,255,
-//     85,0,85,
-//     255,0,0,
-//     0,255,0,
-//     0,0,255,
-//     85,0,85,
-// };
-
-// unsigned int inds[] = {
-//     0,1,3,
-//     0,3,2,
-//     5,4,7,
-//     7,4,6,
-//     8,9,11,
-//     8,11,10,
-//     12,14,15,
-//     12,15,13,
-//     16,19,18,
-//     16,17,19,
-//     20,23,21,
-//     20,22,23,
-// };
