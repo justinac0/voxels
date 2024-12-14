@@ -29,7 +29,6 @@ GLuint create_short_buffer(GLenum type, GLenum usage, unsigned short *data, uint
     return bID;
 }
 
-
 GLuint create_int_buffer(GLenum type, GLenum usage, unsigned int *data, uint32_t count) {
     GLuint bID;
     glGenBuffers(1, &bID);

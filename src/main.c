@@ -84,7 +84,8 @@ int main(int argc, char const *argv[]) {
     arena_make(&chunkArena, sizeof(Chunk));
     Chunk *chunk = chunk_create(&chunkArena, vec3r_zero());
     chunk_generate(chunk);
-    chunk_make_mesh(chunk);
+    // chunk_make_mesh(chunk);
+    chunk_make_mesh2(chunk);
 
     printf("voxel size: %lu\n", sizeof(Voxel));
     printf("chunk size: %lu\n", sizeof(Chunk));
@@ -95,8 +96,9 @@ int main(int argc, char const *argv[]) {
     Mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.02, 200, fov, aspect);
     Mat4x4r model = mat4x4r_identity();
 
-    glFrontFace(GL_CW); 
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE); 
+    glFrontFace(GL_CW); 
     glCullFace(GL_FRONT);
 
     SDL_Event event;
