@@ -22,9 +22,9 @@ void camera_move(Camera *camera, real mouseX, real mouseY) {
     real moveSpeed = 0.01;
     real sensitivity = 0.001f;
 
-    real x = (is_key_down(SDLK_A) - is_key_down(SDLK_D)) * moveSpeed;
-    real z = (is_key_down(SDLK_S) - is_key_down(SDLK_W)) * moveSpeed;
-    real y = (is_key_down(SDLK_LSHIFT) - is_key_down(SDLK_SPACE)) * moveSpeed;
+    real x = (is_key_down(SDLK_D) - is_key_down(SDLK_A)) * moveSpeed;
+    real z = (is_key_down(SDLK_W) - is_key_down(SDLK_S)) * moveSpeed;
+    real y = (is_key_down(SDLK_SPACE) - is_key_down(SDLK_LSHIFT)) * moveSpeed;
 
     real yaw = mouseX * sensitivity;
     real pitch = mouseY * sensitivity;
@@ -45,7 +45,7 @@ void camera_move(Camera *camera, real mouseX, real mouseY) {
     Mat4x4r R = mat4x4r_rotation(camera->orientation);
 
     if (is_key_down(SDLK_R)) {
-        camera->position = (Vec3r){-8,-8,24};
+        camera->position = (Vec3r){8,8,-16};
         camera->orientation = quat_identity();
     }
 

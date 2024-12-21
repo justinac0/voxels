@@ -11,7 +11,7 @@
 #include "../memory/arena.h"
 #include "voxel.h"
 
-#define CHUNK_SIZE (16)
+#define CHUNK_SIZE (64)
 #define CHUNK_AREA (CHUNK_SIZE*CHUNK_SIZE)
 #define CHUNK_VOLUME (CHUNK_SIZE*CHUNK_SIZE*CHUNK_SIZE)
 #define CUBE_VERTS_SIZE (36)
@@ -32,7 +32,6 @@ void chunk_generate(Chunk *chunk);
 size_t chunk_get_voxel_index(int8_t x, int8_t y, int8_t z);
 Voxel *chunk_get_voxel(Chunk *chunk, int8_t x, int8_t y, int8_t z);
 void chunk_make_mesh(Chunk *chunk);
-void chunk_make_mesh2(Chunk *chunk);
 void chunk_free_mesh(Chunk *chunk);
 void chunk_draw(Chunk *chunk);
 

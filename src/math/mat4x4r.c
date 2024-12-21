@@ -124,23 +124,21 @@ Mat4x4r mat4x4r_rotation(Quat q) {
     return r;
 }
 
+// https://stackoverflow.com/questions/58615238/opengl-perspective-projection-how-to-define-left-and-right
 Mat4x4r mat4x4r_perspective(real left, real right, real top, real bottom, real znear, real zfar, real fov, real aspect) {
     Mat4x4r p = mat4x4r_identity();
 
-    real range = aspect * tan(fov / 2.0);
+    real range = tan(fov / 2.0);
 
-    p.m00 = 1/range;
-
-    p.m11 = 1/tan(fov / 2.0);
+    p.m00 = 1/(range*aspect);
+    p.m11 = 1/range;
 
     p.m22 = -(zfar + znear) / (zfar - znear);
-    p.m23 = 1;
-
+    p.m23 = -1;
     p.m32 = -((2.0 * zfar * znear) / (zfar - znear));
 
     return p;
 }
-
 
 Mat4x4r mat4x4r_print(Mat4x4r* m) {
     printf("[Matrix]\n");

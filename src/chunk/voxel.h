@@ -2,7 +2,7 @@
 #define VOXEL_H
 
 #include <stdint.h>
-#include "../math/vec4r.h"
+#include "../math/vec3r.h"
 
 typedef enum {
     VOXEL_TYPE_NONE  = 0,
@@ -29,6 +29,6 @@ typedef struct {
     VoxelType type;
 } Voxel;
 
-Vec4r voxel_color(VoxelType type);
+Vec3r voxel_color(VoxelType type);
 
 #endif // VOXEL_H
