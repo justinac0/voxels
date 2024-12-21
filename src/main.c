@@ -96,7 +96,7 @@ int main(int argc, char const *argv[]) {
     Mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.02, 200, fov, aspect);
     Mat4x4r model = mat4x4r_identity();
 
-    glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE); 
     glFrontFace(GL_CW); 
     glCullFace(GL_FRONT);
@@ -132,6 +132,8 @@ int main(int argc, char const *argv[]) {
 
         glUseProgram(shaderProgram);
         chunk_draw(chunk);
+
+        printf("%f %f %f\n", camera.position.x, camera.position.y, camera.position.z);
 
         SDL_GL_SwapWindow(window);
     }

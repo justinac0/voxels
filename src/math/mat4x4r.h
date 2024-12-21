@@ -18,7 +18,7 @@ typedef union {
         real m30, m31, m32, m33;
     };
     struct {
-        Vec4r m0, m1, m2, m3;
+        Vec3r m0, m1, m2, m3;
     };
 } Mat4x4r;
 

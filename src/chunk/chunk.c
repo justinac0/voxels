@@ -15,6 +15,10 @@ float colourList[VERTEX_COUNT];
 size_t colourIndex = 0;
 #define ADD_COLOUR(r, g, b) colourList[colourIndex++] = r; colourList[colourIndex++] = g; colourList[colourIndex++] = b;
 
+static inline void add_color_vec3r(Vec3r colour) {
+    colourList[colourIndex++] = colour.r; colourList[colourIndex++] = colour.g; colourList[colourIndex++] = colour.b;
+}
+
 unsigned int indexList[INDEX_COUNT];
 size_t indexIndex = 0;
 #define ADD_TRIANGLE(a, b, c) indexList[indexIndex++] = a; indexList[indexIndex++] = b; indexList[indexIndex++] = c;
@@ -113,8 +117,7 @@ void chunk_generate(Chunk *chunk) {
         for (uint8_t y = 0; y < CHUNK_SIZE; y++) {
             for (uint8_t z = 0; z < CHUNK_SIZE; z++) {
                 Voxel* voxel = chunk_get_voxel(chunk, x, y, z);
-                voxel->type = ((x + y + z) % 2 == 0) ? VOXEL_TYPE_BLACK : VOXEL_TYPE_WHITE;
-                // voxel->type = random_voxel_type();
+                voxel->type = random_voxel_type();
             }
         }
     }
@@ -128,7 +131,7 @@ typedef union {
 } Vec3i;
 
 void add_face(Vec3r* chunkPos, Vec3r* centerPos, Voxel* center) {
-    Vec4r color = voxel_color(center->type);
+    Vec3r color = voxel_color(center->type);
     Vec3r verts[] = LEFT_FACE_VERTS;
     unsigned int idx[] = FRONT_FACE_INDS;
 
@@ -149,9 +152,11 @@ void add_face(Vec3r* chunkPos, Vec3r* centerPos, Voxel* center) {
 }
 
 void generate_cube_faces(Vec3r* chunkPos, Vec3r* centerPos, Voxel* center, Voxel* top, Voxel* bottom, Voxel* left, Voxel* right, Voxel* front, Voxel* back) {
+    if (center->type == VOXEL_TYPE_NONE) return;
+
     // TODO: fill in vertices, color, normals : vert index winding order (Counter Clockwise)
-    Vec4r color = voxel_color(center->type);
-    if (!top) {
+    Vec3r color = voxel_color(center->type);
+    if (!top || top->type == VOXEL_TYPE_NONE) {
         Vec3r verts[] = TOP_FACE_VERTS;
         unsigned int idx[] = TOP_FACE_INDS;
 
@@ -164,13 +169,13 @@ void generate_cube_faces(Vec3r* chunkPos, Vec3r* centerPos, Voxel* center, Voxel
 
         for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
             ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
-            ADD_COLOUR(color.r, color.g, color.b);
+            add_color_vec3r(voxel_color(VOXEL_TYPE_RED));
         }
         for (int i = 0; i < 2; i++) {
             ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
         }
     }
-    if (!bottom) {
+    if (!bottom || bottom->type == VOXEL_TYPE_NONE) {
         Vec3r verts[] = BOTTOM_FACE_VERTS;
         unsigned int idx[] = BOTTOM_FACE_INDS;
 
@@ -183,13 +188,13 @@ void generate_cube_faces(Vec3r* chunkPos, Vec3r* centerPos, Voxel* center, Voxel
 
         for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
             ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
-            ADD_COLOUR(color.r, color.g, color.b);
+            add_color_vec3r(voxel_color(VOXEL_TYPE_GREEN));
         }
         for (int i = 0; i < 2; i++) {
             ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
         }
     }
-    if (!left) {
+    if (!left || left->type == VOXEL_TYPE_NONE) {
         Vec3r verts[] = LEFT_FACE_VERTS;
         unsigned int idx[] = FRONT_FACE_INDS;
 
@@ -202,13 +207,13 @@ void generate_cube_faces(Vec3r* chunkPos, Vec3r* centerPos, Voxel* center, Voxel
 
         for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
             ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
-            ADD_COLOUR(color.r, color.g, color.b);
+            add_color_vec3r(voxel_color(VOXEL_TYPE_BLUE));
         }
         for (int i = 0; i < 2; i++) {
             ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
         }
     }
-    if (!right) {
+    if (!right || right->type == VOXEL_TYPE_NONE) {
         Vec3r verts[] = RIGHT_FACE_VERTS;
         unsigned int idx[] = RIGHT_FACE_INDS;
 
@@ -221,13 +226,13 @@ void generate_cube_faces(Vec3r* chunkPos, Vec3r* centerPos, Voxel* center, Voxel
 
         for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
             ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
-            ADD_COLOUR(color.r, color.g, color.b);
+            add_color_vec3r(voxel_color(VOXEL_TYPE_GRAY));
         }
         for (int i = 0; i < 2; i++) {
             ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
         }
     }
-    if (!front) {
+    if (!front || front->type == VOXEL_TYPE_NONE) {
         Vec3r verts[] = FRONT_FACE_VERTS;
         unsigned int idx[] = FRONT_FACE_INDS;
 
@@ -240,13 +245,13 @@ void generate_cube_faces(Vec3r* chunkPos, Vec3r* centerPos, Voxel* center, Voxel
 
         for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
             ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
-            ADD_COLOUR(color.r, color.g, color.b);
+            add_color_vec3r(voxel_color(VOXEL_TYPE_CYAN));
         }
         for (int i = 0; i < 2; i++) {
             ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
         }
     }
-    if (!back) {
+    if (!back || back->type == VOXEL_TYPE_NONE) {
         Vec3r verts[] = BACK_FACE_VERTS;
         unsigned int idx[] = BACK_FACE_INDS;
 
@@ -259,7 +264,7 @@ void generate_cube_faces(Vec3r* chunkPos, Vec3r* centerPos, Voxel* center, Voxel
 
         for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
             ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
-            ADD_COLOUR(color.r, color.g, color.b);
+            add_color_vec3r(voxel_color(VOXEL_TYPE_BROWN));
         }
         for (int i = 0; i < 2; i++) {
             ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
