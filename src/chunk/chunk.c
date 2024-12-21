@@ -169,7 +169,6 @@ Vec3i get_direction(Direction dir) {
     return directions[dir];
 }
 
-// typedef Vec3r[4] FaceVertices;
 typedef struct FaceVertices {
     Vec3r vertices[4]; // 4 vertices per face
 } FaceVertices;
@@ -250,128 +249,7 @@ static inline void setup() {
     set_indices();
 }
 
-void generate_cube_faces(Vec3r* chunkPos, Vec3r* centerPos, Voxel* center, Voxel* top, Voxel* bottom, Voxel* left, Voxel* right, Voxel* front, Voxel* back) {
-    if (center->type == VOXEL_TYPE_NONE) return;
-
-    // TODO: fill in vertices, color, normals : vert index winding order (Counter Clockwise)
-    Vec3r color = voxel_color(center->type);
-    if (!top || top->type == VOXEL_TYPE_NONE) {
-        Vec3r verts[] = TOP_FACE_VERTS;
-        unsigned int idx[] = TOP_FACE_INDS;
-
-        // record where the indices for this face start
-        size_t indiceOffset = vertexIndex;
-
-        float x = chunkPos->x + centerPos->x;
-        float y = chunkPos->y + centerPos->y;
-        float z = chunkPos->z + centerPos->z;
-
-        for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
-            ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
-            add_color_vec3r(voxel_color(VOXEL_TYPE_RED));
-        }
-        for (int i = 0; i < 2; i++) {
-            ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
-        }
-    }
-    if (!bottom || bottom->type == VOXEL_TYPE_NONE) {
-        Vec3r verts[] = BOTTOM_FACE_VERTS;
-        unsigned int idx[] = BOTTOM_FACE_INDS;
-
-        // record where the indices for this face start
-        size_t indiceOffset = vertexIndex;
-
-        float x = chunkPos->x + centerPos->x;
-        float y = chunkPos->y + centerPos->y;
-        float z = chunkPos->z + centerPos->z;
-
-        for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
-            ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
-            add_color_vec3r(voxel_color(VOXEL_TYPE_GREEN));
-        }
-        for (int i = 0; i < 2; i++) {
-            ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
-        }
-    }
-    if (!left || left->type == VOXEL_TYPE_NONE) {
-        Vec3r verts[] = LEFT_FACE_VERTS;
-        unsigned int idx[] = FRONT_FACE_INDS;
-
-        // record where the indices for this face start
-        size_t indiceOffset = vertexIndex;
-
-        float x = chunkPos->x + centerPos->x;
-        float y = chunkPos->y + centerPos->y;
-        float z = chunkPos->z + centerPos->z;
-
-        for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
-            ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
-            add_color_vec3r(voxel_color(VOXEL_TYPE_BLUE));
-        }
-        for (int i = 0; i < 2; i++) {
-            ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
-        }
-    }
-    if (!right || right->type == VOXEL_TYPE_NONE) {
-        Vec3r verts[] = RIGHT_FACE_VERTS;
-        unsigned int idx[] = RIGHT_FACE_INDS;
-
-        // record where the indices for this face start
-        size_t indiceOffset = vertexIndex;
-
-        float x = chunkPos->x + centerPos->x;
-        float y = chunkPos->y + centerPos->y;
-        float z = chunkPos->z + centerPos->z;
-
-        for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
-            ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
-            add_color_vec3r(voxel_color(VOXEL_TYPE_GRAY));
-        }
-        for (int i = 0; i < 2; i++) {
-            ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
-        }
-    }
-    if (!front || front->type == VOXEL_TYPE_NONE) {
-        Vec3r verts[] = FRONT_FACE_VERTS;
-        unsigned int idx[] = FRONT_FACE_INDS;
-
-        // record where the indices for this face start
-        size_t indiceOffset = vertexIndex;
-
-        float x = chunkPos->x + centerPos->x;
-        float y = chunkPos->y + centerPos->y;
-        float z = chunkPos->z + centerPos->z;
-
-        for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
-            ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
-            add_color_vec3r(voxel_color(VOXEL_TYPE_CYAN));
-        }
-        for (int i = 0; i < 2; i++) {
-            ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
-        }
-    }
-    if (!back || back->type == VOXEL_TYPE_NONE) {
-        Vec3r verts[] = BACK_FACE_VERTS;
-        unsigned int idx[] = BACK_FACE_INDS;
-
-        // record where the indices for this face start
-        size_t indiceOffset = vertexIndex;
-
-        float x = chunkPos->x + centerPos->x;
-        float y = chunkPos->y + centerPos->y;
-        float z = chunkPos->z + centerPos->z;
-
-        for (size_t i = 0; i < sizeof(verts) / sizeof(Vec3r); i++) {
-            ADD_VERTEX(verts[i].x + x, verts[i].y + y, verts[i].z + z);
-            add_color_vec3r(voxel_color(VOXEL_TYPE_BROWN));
-        }
-        for (int i = 0; i < 2; i++) {
-            ADD_TRIANGLE(idx[i*3] + indiceOffset/3, idx[i*3+1] + indiceOffset/3, idx[i*3+2] + indiceOffset/3);
-        }
-    }
-}
-
-void chunk_make_mesh2(Chunk *chunk) {
+void chunk_make_mesh(Chunk *chunk) {
     setup();
 
     for (int8_t x = 0; x < CHUNK_SIZE; x++) {
@@ -384,17 +262,6 @@ void chunk_make_mesh2(Chunk *chunk) {
                 add_voxel_face(chunk, pos, RIGHT);
                 add_voxel_face(chunk, pos, FRONT);
                 add_voxel_face(chunk, pos, BACK);
-
-                // Voxel *voxel = chunk_get_voxel(chunk, x, y, z);
-                // Voxel *top = chunk_get_voxel(chunk, x, y+1, z);
-                // Voxel *bottom = chunk_get_voxel(chunk, x, y-1, z);
-                // Voxel *left = chunk_get_voxel(chunk, x-1, y, z);
-                // Voxel *right = chunk_get_voxel(chunk, x+1, y, z);
-                // Voxel *front = chunk_get_voxel(chunk, x, y, z+1);
-                // Voxel *back = chunk_get_voxel(chunk, x, y, z-1);
-
-                // Vec3r pos = {x,y,z};
-                // generate_cube_faces(&chunk->position, &pos, voxel, top, bottom, left, right, front, back);
             }
         }
     }
