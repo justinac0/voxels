@@ -22,12 +22,12 @@ void camera_move(Camera *camera, real mouseX, real mouseY) {
     real moveSpeed = 0.01;
     real sensitivity = 0.001f;
 
-    real x = (is_key_down(SDLK_A) - is_key_down(SDLK_D)) * moveSpeed;
+    real x = -(is_key_down(SDLK_A) - is_key_down(SDLK_D)) * moveSpeed;
     real z = (is_key_down(SDLK_S) - is_key_down(SDLK_W)) * moveSpeed;
-    real y = (is_key_down(SDLK_LSHIFT) - is_key_down(SDLK_SPACE)) * moveSpeed;
+    real y = -(is_key_down(SDLK_LSHIFT) - is_key_down(SDLK_SPACE)) * moveSpeed;
 
-    real yaw = mouseX * sensitivity;
-    real pitch = mouseY * sensitivity;
+    real yaw = -mouseX * sensitivity;
+    real pitch = -mouseY * sensitivity;
 
     Quat qx = quat_from_axis_angle(axis_angle(pitch, vec3r_right()));
     Quat qy = quat_from_axis_angle(axis_angle(yaw, vec3r_up()));

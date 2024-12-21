@@ -1,12 +1,3 @@
-// QUESTIONS(justin):
-//  What should the renderer do?
-//  How should chunks be handled?
-//  How can we update individual voxel data efficiently between CPU/GPU
-//  How is greedy messhing implemented?
-//  How is a sparse octo tree implemented for voxels?
-//  What is the thoretical minimum voxel size?
-//  How are collisions handled?
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -16,6 +7,8 @@
 #include <SDL3/SDL_mouse.h>
 #include <SDL3/SDL_keyboard.h>
 #include <glad/glad.h>
+
+// #include <cglm/cglm.h>
 
 #include "renderer/glhelp.h"
 #include "renderer/shader.h"
@@ -91,8 +84,8 @@ int main(int argc, char const *argv[]) {
     printf("chunk size: %lu\n", sizeof(Chunk));
 
     real aspect = 2;
+    real fov = 80;
 
-    real fov = 20;
     Mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.02, 200, fov, aspect);
     Mat4x4r model = mat4x4r_identity();
 
@@ -103,7 +96,7 @@ int main(int argc, char const *argv[]) {
 
     SDL_Event event;
     Camera camera;
-    camera_init(&camera, (Vec3r){-8, -8, 24});
+    camera_init(&camera, (Vec3r){8, 8, 24});
     while (running) {
         SDL_PumpEvents();
         SDL_WarpMouseInWindow(window, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
@@ -132,8 +125,6 @@ int main(int argc, char const *argv[]) {
 
         glUseProgram(shaderProgram);
         chunk_draw(chunk);
-
-        printf("%f %f %f\n", camera.position.x, camera.position.y, camera.position.z);
 
         SDL_GL_SwapWindow(window);
     }
