@@ -8,7 +8,8 @@
 #include <SDL3/SDL_keyboard.h>
 #include <glad/glad.h>
 
-// #include <cglm/cglm.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 #include "renderer/glhelp.h"
 #include "renderer/shader.h"
@@ -17,7 +18,6 @@
 #include "input/keyboard.h"
 #include "memory/arena.h"
 
-// TODO: common defs
 #define KB (1024)
 #define MB (KB * 1024)
 #define GB (MB * 1024)
@@ -28,7 +28,7 @@
 #include "memory/arena.h"
 
 #define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 720
+#define SCREEN_HEIGHT 800
 #define SCREEN_TITLE "voxels"
 
 bool running = false;
@@ -70,20 +70,26 @@ int main(int argc, char const *argv[]) {
 
     running = true;
 
+    // seed random number generator
+    srand(time(NULL));
+
     GLuint shaderProgram = create_shader_program("resources/shaders/triangle.vs", "resources/shaders/triangle.fs");
 
     // takes in a position argument
+    int chunk_count = 1;
     Arena chunkArena;
-    arena_make(&chunkArena, sizeof(Chunk));
-    Chunk *chunk = chunk_create(&chunkArena, vec3r_zero());
-    chunk_generate(chunk);
-    chunk_make_mesh(chunk);
+    arena_make(&chunkArena, chunk_count*sizeof(Chunk));
+    Chunk *chunks[chunk_count];
+    for (int i = 0; i < chunk_count; i++) {
+        chunks[i] = chunk_create(&chunkArena, (Vec3r){i*CHUNK_SIZE, 0, i*CHUNK_SIZE});
+        chunk_generate(chunks[i]);
+        chunk_make_mesh(chunks[i]);
+    }
 
-    printf("voxel size: %lu\n", sizeof(Voxel));
-    printf("chunk size: %lu\n", sizeof(Chunk));
+    printf("cs: %lu\n", sizeof(Chunk));
 
-    real aspect = 2;
-    real fov = 80;
+    real aspect = 1.75f;
+    real fov = DEG2RAD(70);
 
     Mat4x4r perspective = mat4x4r_perspective(-1, 1, 1, -1, 0.1, 100.0, fov, aspect);
     Mat4x4r model = mat4x4r_identity();
@@ -97,7 +103,7 @@ int main(int argc, char const *argv[]) {
 
     SDL_Event event;
     Camera camera;
-    camera_init(&camera, (Vec3r){8, 8, -16});
+    camera_init(&camera, (Vec3r){0, 0, -32});
     while (running) {
         SDL_PumpEvents();
         SDL_WarpMouseInWindow(window, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
@@ -117,7 +123,7 @@ int main(int argc, char const *argv[]) {
         camera_move(&camera, mx, my);
 
         // draw
-        glClearColor(0.2, 0.4, 0.6, 1);
+        glClearColor(0.2,0.2,0.2, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "m_projection"), 1, GL_FALSE, (float*)perspective.m);
@@ -125,12 +131,13 @@ int main(int argc, char const *argv[]) {
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "m_transform"), 1, GL_FALSE, (float*)model.m);
 
         glUseProgram(shaderProgram);
-        chunk_draw(chunk);
+        for (int i = 0; i < chunk_count; i++) {
+            chunk_draw(chunks[i]);
+        }
 
         SDL_GL_SwapWindow(window);
     }
 
-    chunk_free_mesh(chunk);
     arena_free(&chunkArena);
     SDL_GL_DestroyContext(glctx);
     SDL_DestroyWindow(window);

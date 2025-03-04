@@ -52,6 +52,5 @@ Mkfile.old
 dkms.conf
 
 # Project Specific
-resources
 bin
 .vscode
