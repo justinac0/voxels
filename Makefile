@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-W -g -std=c99 -I./deps/glad/include/ -I./deps/stb/
 
 LDFLAGS=
-# for remove opengl winmm and gdi for linux
+# for remove: opengl winmm and gdi for linux
 LDLIBS=-lopengl32 -lwinmm -lgdi32 -lSDL3 -lm
 APP_NAME=game
 EXEC=bin/$(APP_NAME)
