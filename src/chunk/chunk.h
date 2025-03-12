@@ -11,16 +11,16 @@
 #include "../memory/arena.h"
 #include "voxel.h"
 
-#define CHUNK_SIZE (64)
+#define CHUNK_SIZE (16)
 #define CHUNK_AREA (CHUNK_SIZE*CHUNK_SIZE)
 #define CHUNK_VOLUME (CHUNK_SIZE*CHUNK_SIZE*CHUNK_SIZE)
 #define CUBE_VERTS_SIZE (36)
 #define CUBE_SIZE_SCALING (1)
 
 // Normal calculations: https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
-typedef struct {
+typedef struct Chunk {
     Voxel voxels[CHUNK_VOLUME];
-    Vec3r position; // the smallest x, y, z value of the chunk
+    Vec3r position;
     GLuint vaoID;
     GLuint vboID;
     GLuint nboID;

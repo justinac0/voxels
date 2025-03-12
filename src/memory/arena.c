@@ -5,23 +5,20 @@
 #include <string.h>
 #include <assert.h>
 
-#define ALIGN_32 (4)
-#define ALIGN_64 (8)
-#define DEFAULT_ALIGN ALIGN_64
+// Virtual memory allocation for Windows
+// https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc
 
-size_t align_up(size_t offset, size_t alignment) {
-    size_t mask = alignment - 1;
-    return (offset + mask) & ~mask;
-}
+// Virtual memory allocation for Linux
+// https://www.man7.org/linux/man-pages/man2/mmap.2.html
 
-void arena_make(Arena* arena, size_t size) {
-    arena->base = malloc(size);
+void arena_make(Arena* arena, size_t capacity) {
+    arena->base = malloc(capacity);
     assert(arena->base);
 
-    memset(arena->base, 0, size);
+    memset(arena->base, 0, capacity);
 
     arena->offset = arena->base;
-    arena->size = size;
+    arena->capacity = capacity;
 }
 
 void arena_free(Arena* arena) {
@@ -29,20 +26,23 @@ void arena_free(Arena* arena) {
 }
 
 void arena_clear(Arena* arena) {
-    memset(arena->base, 0, arena->size);
+    memset(arena->base, 0, arena->capacity);
     arena->offset = arena->base;
 }
 
 void* arena_alloc(Arena *arena, size_t size) {
     size_t offset = arena->offset - arena->base;
-    size_t align_offset = align_up(offset, DEFAULT_ALIGN);
-    if (align_offset + size > arena->size) {
+
+    printf("size: %lu\n", size);
+    printf("offset: %lu\n", offset);
+
+    if (offset + size > arena->capacity) {
         printf("cannot do arena_alloc, size exceeds arena limit\n");
         return NULL;
     }
 
     void* start = arena->offset;
-    arena->offset += size + align_offset;
+    arena->offset += size;
 
     return start;
 }

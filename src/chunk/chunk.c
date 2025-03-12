@@ -1,4 +1,6 @@
 #include "chunk.h"
+#include <string.h>
+#include <stdlib.h>
 #include <assert.h>
 // https://voxelenginetutorial.wiki/greedy-mesh.html
 
@@ -6,6 +8,7 @@
 #define VERTEX_COUNT (CHUNK_VOLUME * CUBE_VERTEX_COUNT * 3)
 #define INDEX_COUNT (CHUNK_VOLUME * CUBE_VERTS_SIZE)
 #define NORMAL_COUNT VERTEX_COUNT
+#define TEXTURE_COORD_COUNT VERTEX_COUNT
 
 float vertexList[VERTEX_COUNT];
 size_t vertexIndex = 0;
@@ -22,6 +25,16 @@ static inline void add_color_vec3r(Vec3r colour) {
 unsigned int indexList[INDEX_COUNT];
 size_t indexIndex = 0;
 #define ADD_TRIANGLE(a, b, c) indexList[indexIndex++] = a; indexList[indexIndex++] = b; indexList[indexIndex++] = c;
+
+float textureCoords[TEXTURE_COORD_COUNT];
+size_t textureIndex = 0;
+#define ADD_TEXTURE_COORDS(x, y) textureCoords[textureIndex++] = x; textureCoords[textureIndex++] = y;
+#define TEXTURE_COORDS {\
+    1.0f, 1.0f,\
+    1.0f, 0.0f,\
+    0.0f, 0.0f,\
+    0.0f, 1.0f\
+}
 
 #define FRONT_FACE_VERTS {\
     -0.5,  0.5, 0.5,\
@@ -99,7 +112,6 @@ Voxel *chunk_get_voxel(Chunk *chunk, int8_t x, int8_t y, int8_t z) {
 }
 
 Chunk *chunk_create(Arena *arena, Vec3r position) {
-    srand(time(NULL));
     Chunk *chunk = arena_alloc(arena, sizeof(Chunk));
 
     if (chunk == NULL) return NULL;
@@ -117,7 +129,10 @@ void chunk_generate(Chunk *chunk) {
         for (uint8_t y = 0; y < CHUNK_SIZE; y++) {
             for (uint8_t z = 0; z < CHUNK_SIZE; z++) {
                 Voxel* voxel = chunk_get_voxel(chunk, x, y, z);
-                voxel->type = random_voxel_type();
+                voxel->type == VOXEL_TYPE_NONE;
+                while (voxel->type == VOXEL_TYPE_NONE) {
+                    voxel->type = random_voxel_type();
+                }
             }
         }
     }
@@ -187,7 +202,7 @@ FaceVertices get_face_vertices(Direction dir) {
     return face_vertices[dir];
 }
 
-typedef struct {
+typedef struct FaceIndices{
     unsigned int indices[2*3]; // 2 triangles per face, 3 indices per triangle
 } FaceIndices;
 
@@ -233,9 +248,7 @@ void add_voxel_face(Chunk* chunk, Vec3i8 cell, Direction dir) {
         vertexList[vertexIndex++] = vertices.vertices[i].y + chunk->position.y + cell.y;
         vertexList[vertexIndex++] = vertices.vertices[i].z + chunk->position.z + cell.z;
 
-        Vec3r colour = voxel_color(dir + 1);
-        add_color_vec3r(colour);
-        // add_color_vec3r(voxel_color(target->type));
+        add_color_vec3r(voxel_color(target->type));
     }
 
     for (size_t i = 0; i < sizeof(indices.indices) / sizeof(unsigned int); i++) {
@@ -251,6 +264,16 @@ static inline void setup() {
 
 void chunk_make_mesh(Chunk *chunk) {
     setup();
+
+    vertexIndex = 0;
+    colourIndex = 0;
+    indexIndex = 0;
+    textureIndex = 0;
+
+    memset(vertexList, 0, sizeof(vertexList));
+    memset(colourList, 0, sizeof(colourList));
+    memset(indexList, 0, sizeof(indexList));
+    // memset(textureCoords, 0, sizeof(textureCoords));
 
     for (int8_t x = 0; x < CHUNK_SIZE; x++) {
         for (int8_t y = 0; y < CHUNK_SIZE; y++) {
@@ -268,7 +291,7 @@ void chunk_make_mesh(Chunk *chunk) {
 
     printf("vertex count: %d (%d)\n", vertexIndex / 3, vertexIndex);
     printf("colour count: %d (%d)\n", colourIndex / 3, colourIndex);
-    printf("index count: %d (%d)\n", indexIndex / 3, indexIndex);
+    printf("index count: %d (%d)\n\n", indexIndex / 3, indexIndex);
 
     chunk->vaoID = create_vertex_array();
     bind_vertex_array(chunk->vaoID);
@@ -283,6 +306,9 @@ void chunk_make_mesh(Chunk *chunk) {
     set_vertex_attrib_pointer(1, 3, GL_FLOAT, 0, NULL);
     enable_vertex_attrib_pointer(1);
 
+    // GLuint tboID = create_float_buffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, textureCoords, TEXTURE_COORD_COUNT);
+    // set_vertex_attrib_pointer(2, 2, GL_FLOAT, 0, NULL);
+    // enable_vertex_attrib_pointer(2);
 
     bind_vertex_array(0);
 }
@@ -297,5 +323,4 @@ void chunk_draw(Chunk *chunk) {
     bind_vertex_array(chunk->vaoID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, chunk->eboID);
     glDrawElements(GL_TRIANGLES, indexIndex, GL_UNSIGNED_INT, 0);
-    // printf("idx: %d\n", indexIndex);
 }

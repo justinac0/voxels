@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "../math/vec3r.h"
 
-typedef enum {
+typedef enum VoxelType {
     VOXEL_TYPE_NONE  = 0,
     VOXEL_TYPE_WHITE = 1,
     VOXEL_TYPE_BLACK = 2,
@@ -25,7 +25,7 @@ typedef enum {
     VOXEL_TYPE_COUNT
 } VoxelType;
 
-typedef struct {
+typedef struct Voxel {
     VoxelType type;
 } Voxel;
 

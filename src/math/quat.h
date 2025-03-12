@@ -9,11 +9,11 @@
 
 #include <stdio.h>
 
-typedef struct {
+typedef struct Quat {
     real w, x, y, z;
 } Quat;
 
-typedef struct {
+typedef struct AxisAngle {
     Vec3r position;
     real theta;
 } AxisAngle;
