@@ -1,1 +1,3 @@
--I./**/* -I./* -I./deps/* -I./deps/glad/include/*
+-I./deps/glad/include
+-I./deps
+-I./
