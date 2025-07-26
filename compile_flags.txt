@@ -1,0 +1,1 @@
+-I./**/* -I./* -I./deps/* -I./deps/glad/include/*

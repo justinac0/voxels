@@ -19,7 +19,7 @@ Mat4x4r construct_view_matrix(Mat4x4r* view, Mat4x4r* rotation, Mat4x4r* transla
 }
 
 void camera_move(Camera *camera, real mouseX, real mouseY) {
-    real moveSpeed = 0.01;
+    real moveSpeed = 5.0f;
     real sensitivity = 0.001f;
 
     real x = -(is_key_down(SDLK_D) - is_key_down(SDLK_A)) * moveSpeed;

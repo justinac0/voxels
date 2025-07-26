@@ -27,8 +27,8 @@
 
 #include "memory/arena.h"
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 800
+#define SCREEN_WIDTH 1280 
+#define SCREEN_HEIGHT 720
 #define SCREEN_TITLE "voxels"
 
 bool running = false;
@@ -76,7 +76,7 @@ int main(int argc, char const *argv[]) {
     GLuint shaderProgram = create_shader_program("resources/shaders/triangle.vs", "resources/shaders/triangle.fs");
 
     // takes in a position argument
-    int chunk_count = 1;
+    int chunk_count = 10;
     Arena chunkArena;
     arena_make(&chunkArena, chunk_count*sizeof(Chunk));
     Chunk *chunks[chunk_count];
