@@ -9,7 +9,7 @@
 #include <glad/glad.h>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
+#include <stb_image.h>
 
 #include "renderer/glhelp.h"
 #include "renderer/shader.h"
@@ -77,16 +77,22 @@ int main(int argc, char const *argv[]) {
 
     // takes in a position argument
     int chunk_count = 10;
+    int chunk_sqr_count = chunk_count * chunk_count;
+    int count = 0;
     Arena chunkArena;
-    arena_make(&chunkArena, chunk_count*sizeof(Chunk));
-    Chunk *chunks[chunk_count];
+    arena_make(&chunkArena, 1024*sizeof(Chunk));
+    Chunk *chunks[chunk_sqr_count];
     for (int i = 0; i < chunk_count; i++) {
-        chunks[i] = chunk_create(&chunkArena, (Vec3r){i*CHUNK_SIZE, 0, i*CHUNK_SIZE});
-        chunk_generate(chunks[i]);
-        chunk_make_mesh(chunks[i]);
+        for (int j = 0; j < chunk_count; j++) {
+            chunks[count] = chunk_create(&chunkArena, (Vec3r){i*CHUNK_SIZE, 0, j*CHUNK_SIZE});
+            chunk_generate(chunks[count]);
+            chunk_make_mesh(chunks[count]);
+            count++;
+        }
     }
 
     printf("cs: %lu\n", sizeof(Chunk));
+    printf("%d\n", count);
 
     real aspect = 1.75f;
     real fov = DEG2RAD(70);
@@ -131,7 +137,7 @@ int main(int argc, char const *argv[]) {
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "m_transform"), 1, GL_FALSE, (float*)model.m);
 
         glUseProgram(shaderProgram);
-        for (int i = 0; i < chunk_count; i++) {
+        for (int i = 0; i < chunk_sqr_count; i++) {
             chunk_draw(chunks[i]);
         }
 

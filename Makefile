@@ -12,6 +12,7 @@ HEADERS = $(wildcard src/*.h src/**/*.h)
 OBJS=$(SOURCES:.c=.o)
 
 $(EXEC): $(OBJS)
+	mkdir -p bin
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 %.o: %.c $(HEADERS)
